@@ -408,20 +408,53 @@ window.Game = (function() {
      * Отрисовка экрана паузы.
      */
     _drawPauseScreen: function() {
+      var coordinateX = 320,
+        coordinateY = 60,
+        messageText;
+
+      var getPauseScreen = function(ctx, message) {
+        drawPath(ctx, 'rgba(0, 0, 0, 0.7)', coordinateX + 10, coordinateY + 10);
+        drawPath(ctx, '#ffffff', coordinateX, coordinateY);
+        drawText(ctx, message);
+      };
+
+      var drawPath = function(ctx, color, x, y) {
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.moveTo(x + 10, y + 10);
+        ctx.lineTo(x + 300, y);
+        ctx.lineTo(x + 270, y + 150);
+        ctx.lineTo(x - 20, y + 170);
+        ctx.lineTo(x + 10, y + 10);
+        ctx.fill();
+      };
+
+      var drawText = function(ctx, message) {
+        ctx.font = '16px PT Mono';
+        ctx.fillStyle = '#000000';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        coordinateY = coordinateY - message.length * 10;
+        for (var i = 0; i < message.length; i++) {
+          ctx.fillText(message[i], coordinateX + 140, coordinateY + 90 + i * 20);
+        }
+      };
+
       switch (this.state.currentStatus) {
         case Verdict.WIN:
-          console.log('you have won!');
+          messageText = ['Поздравляем, вы победили!', 'Так держать!;)'];
           break;
         case Verdict.FAIL:
-          console.log('you have failed!');
+          messageText = ['Время вышло! Вы проиграли!'];
           break;
         case Verdict.PAUSE:
-          console.log('game is on pause!');
+          messageText = ['Игра поставлена на паузу.', 'Пробел для продолжения.'];
           break;
         case Verdict.INTRO:
-          console.log('welcome to the game! Press Space to start');
+          messageText = ['Добро пожаловать в игру!', 'Нажмите пробел для старта.'];
           break;
       }
+      getPauseScreen(this.ctx, messageText);
     },
 
     /**
