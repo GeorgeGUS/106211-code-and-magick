@@ -408,18 +408,57 @@ window.Game = (function() {
      * Отрисовка экрана паузы.
      */
     _drawPauseScreen: function() {
+      var X_COORDINATE = 320,
+        Y_COORDINATE = 60;
+
+      var getPauseScreen = function(parent, message) {
+        var canvas = document.createElement('canvas');
+        // canvas.setAttribute('width', 350);
+        // canvas.setAttribute('height', 20);
+        // var ctx = canvas.getContext('2d');
+        drawPath(parent.ctx, 'rgba(0, 0, 0, 0.7)', X_COORDINATE + 10, Y_COORDINATE + 10);
+        drawPath(parent.ctx, '#ffffff', X_COORDINATE, Y_COORDINATE);
+        drawText(parent.ctx, message);
+      };
+
+      var drawPath = function(ctx, color, x, y) {
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.moveTo(x + 10, y + 10);
+        ctx.lineTo(x + 300, y);
+        ctx.lineTo(x + 270, y + 150);
+        ctx.lineTo(x - 20, y + 170);
+        ctx.lineTo(x + 10, y + 10);
+        ctx.fill();
+      };
+
+      var drawText = function(ctx, message) {
+        ctx.font = '16px PT Mono';
+        ctx.fillStyle = '#000000';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        if (Array.isArray(message)) {
+          Y_COORDINATE = Y_COORDINATE - message.length * 10;
+          for (var i = 0; i < message.length; i++) {
+            ctx.fillText(message[i], X_COORDINATE + 140, Y_COORDINATE + 90 + i * 20);
+          }
+        } else {
+          ctx.fillText(message, X_COORDINATE + 140, Y_COORDINATE + 90);
+        }
+      };
+
       switch (this.state.currentStatus) {
         case Verdict.WIN:
-          console.log('you have won!');
+          getPauseScreen(this, ['Поздравляем, вы победили!', 'Так держать!;)']);
           break;
         case Verdict.FAIL:
-          console.log('you have failed!');
+          getPauseScreen(this, 'Время вышло! Вы проиграли!');
           break;
         case Verdict.PAUSE:
-          console.log('game is on pause!');
+          getPauseScreen(this, ['Игра поставлена на паузу.', 'Пробел для продолжения.']);
           break;
         case Verdict.INTRO:
-          console.log('welcome to the game! Press Space to start');
+          getPauseScreen(this, ['Добро пожаловать в игру!', 'Нажмите пробел для старта.']);
           break;
       }
     },
