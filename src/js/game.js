@@ -408,59 +408,53 @@ window.Game = (function() {
      * Отрисовка экрана паузы.
      */
     _drawPauseScreen: function() {
-      var X_COORDINATE = 320,
-        Y_COORDINATE = 60;
+      var coordinateX = 320,
+        coordinateY = 60,
+        messageText;
 
       var getPauseScreen = function(parent, message) {
-        var canvas = document.createElement('canvas');
-        // canvas.setAttribute('width', 350);
-        // canvas.setAttribute('height', 20);
-        // var ctx = canvas.getContext('2d');
-        drawPath(parent.ctx, 'rgba(0, 0, 0, 0.7)', X_COORDINATE + 10, Y_COORDINATE + 10);
-        drawPath(parent.ctx, '#ffffff', X_COORDINATE, Y_COORDINATE);
-        drawText(parent.ctx, message);
+        drawPath(parent, 'rgba(0, 0, 0, 0.7)', coordinateX + 10, coordinateY + 10);
+        drawPath(parent, '#ffffff', coordinateX, coordinateY);
+        drawText(parent, message);
       };
 
-      var drawPath = function(ctx, color, x, y) {
-        ctx.fillStyle = color;
-        ctx.beginPath();
-        ctx.moveTo(x + 10, y + 10);
-        ctx.lineTo(x + 300, y);
-        ctx.lineTo(x + 270, y + 150);
-        ctx.lineTo(x - 20, y + 170);
-        ctx.lineTo(x + 10, y + 10);
-        ctx.fill();
+      var drawPath = function(parent, color, x, y) {
+        parent.fillStyle = color;
+        parent.beginPath();
+        parent.moveTo(x + 10, y + 10);
+        parent.lineTo(x + 300, y);
+        parent.lineTo(x + 270, y + 150);
+        parent.lineTo(x - 20, y + 170);
+        parent.lineTo(x + 10, y + 10);
+        parent.fill();
       };
 
-      var drawText = function(ctx, message) {
-        ctx.font = '16px PT Mono';
-        ctx.fillStyle = '#000000';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        if (Array.isArray(message)) {
-          Y_COORDINATE = Y_COORDINATE - message.length * 10;
-          for (var i = 0; i < message.length; i++) {
-            ctx.fillText(message[i], X_COORDINATE + 140, Y_COORDINATE + 90 + i * 20);
-          }
-        } else {
-          ctx.fillText(message, X_COORDINATE + 140, Y_COORDINATE + 90);
+      var drawText = function(parent, message) {
+        parent.font = '16px PT Mono';
+        parent.fillStyle = '#000000';
+        parent.textAlign = 'center';
+        parent.textBaseline = 'middle';
+        coordinateY = coordinateY - message.length * 10;
+        for (var i = 0; i < message.length; i++) {
+          parent.fillText(message[i], coordinateX + 140, coordinateY + 90 + i * 20);
         }
       };
 
       switch (this.state.currentStatus) {
         case Verdict.WIN:
-          getPauseScreen(this, ['Поздравляем, вы победили!', 'Так держать!;)']);
+          messageText = ['Поздравляем, вы победили!', 'Так держать!;)'];
           break;
         case Verdict.FAIL:
-          getPauseScreen(this, 'Время вышло! Вы проиграли!');
+          messageText = ['Время вышло! Вы проиграли!'];
           break;
         case Verdict.PAUSE:
-          getPauseScreen(this, ['Игра поставлена на паузу.', 'Пробел для продолжения.']);
+          messageText = ['Игра поставлена на паузу.', 'Пробел для продолжения.'];
           break;
         case Verdict.INTRO:
-          getPauseScreen(this, ['Добро пожаловать в игру!', 'Нажмите пробел для старта.']);
+          messageText = ['Добро пожаловать в игру!', 'Нажмите пробел для старта.'];
           break;
       }
+      getPauseScreen(this.ctx, messageText);
     },
 
     /**
