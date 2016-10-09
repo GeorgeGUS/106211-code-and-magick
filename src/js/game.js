@@ -412,31 +412,31 @@ window.Game = (function() {
         coordinateY = 60,
         messageText;
 
-      var getPauseScreen = function(parent, message) {
-        drawPath(parent, 'rgba(0, 0, 0, 0.7)', coordinateX + 10, coordinateY + 10);
-        drawPath(parent, '#ffffff', coordinateX, coordinateY);
-        drawText(parent, message);
+      var getPauseScreen = function(ctx, message) {
+        drawPath(ctx, 'rgba(0, 0, 0, 0.7)', coordinateX + 10, coordinateY + 10);
+        drawPath(ctx, '#ffffff', coordinateX, coordinateY);
+        drawText(ctx, message);
       };
 
-      var drawPath = function(parent, color, x, y) {
-        parent.fillStyle = color;
-        parent.beginPath();
-        parent.moveTo(x + 10, y + 10);
-        parent.lineTo(x + 300, y);
-        parent.lineTo(x + 270, y + 150);
-        parent.lineTo(x - 20, y + 170);
-        parent.lineTo(x + 10, y + 10);
-        parent.fill();
+      var drawPath = function(ctx, color, x, y) {
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.moveTo(x + 10, y + 10);
+        ctx.lineTo(x + 300, y);
+        ctx.lineTo(x + 270, y + 150);
+        ctx.lineTo(x - 20, y + 170);
+        ctx.lineTo(x + 10, y + 10);
+        ctx.fill();
       };
 
-      var drawText = function(parent, message) {
-        parent.font = '16px PT Mono';
-        parent.fillStyle = '#000000';
-        parent.textAlign = 'center';
-        parent.textBaseline = 'middle';
+      var drawText = function(ctx, message) {
+        ctx.font = '16px PT Mono';
+        ctx.fillStyle = '#000000';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
         coordinateY = coordinateY - message.length * 10;
         for (var i = 0; i < message.length; i++) {
-          parent.fillText(message[i], coordinateX + 140, coordinateY + 90 + i * 20);
+          ctx.fillText(message[i], coordinateX + 140, coordinateY + 90 + i * 20);
         }
       };
 
