@@ -415,7 +415,7 @@ window.Game = (function() {
       var getPauseScreen = function(ctx, message) {
         drawPath(ctx, 'rgba(0, 0, 0, 0.7)', coordinateX + 10, coordinateY + 10);
         drawPath(ctx, '#ffffff', coordinateX, coordinateY);
-        drawText(ctx, message);
+        drawText(ctx, message, 300);
       };
 
       var drawPath = function(ctx, color, x, y) {
@@ -434,24 +434,45 @@ window.Game = (function() {
         ctx.fillStyle = '#000000';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        coordinateY = coordinateY - message.length * 10;
-        for (var i = 0; i < message.length; i++) {
-          ctx.fillText(message[i], coordinateX + 140, coordinateY + 90 + i * 20);
+        var words = message.split(' '),
+          text = '',
+          containerWidth = 280,
+          lineHeight = 20,
+          marginLeft = coordinateX + 140,
+          marginTop = coordinateY + 90;        
+        for (var i = 0; i < words.length; i++) {
+          var textLine = text + words[i] + ' ';
+          var textWidth = ctx.measureText(textLine).width;
+          
+          if (textWidth > containerWidth) {
+            ctx.fillText(text, marginLeft, marginTop);
+            text = words[i] + ' ';            
+            marginTop += lineHeight;
+          } else {
+            text = textLine;
+          }
         }
+        ctx.fillText(text, marginLeft, marginTop);
+//        for (var i = 0; i < message.length; i++) {        
+//            coordinateY = coordinateY - message.length * 10;
+//          ctx.fillText(message[i], coordinateX + 140, coordinateY + 90 + i * 20);
+//        }
       };
 
       switch (this.state.currentStatus) {
         case Verdict.WIN:
-          messageText = ['Поздравляем, вы победили!', 'Так держать!;)'];
+//          messageText = ['Поздравляем, вы победили!', 'Так держать!;)'];
+          messageText = 'Поздравляем, вы победили! Так держать!;)';
           break;
         case Verdict.FAIL:
-          messageText = ['Время вышло! Вы проиграли!'];
+          messageText = 'Время вышло! Вы проиграли!';
           break;
         case Verdict.PAUSE:
-          messageText = ['Игра поставлена на паузу.', 'Пробел для продолжения.'];
+          messageText = 'Игра поставлена на паузу. Пробел для продолжения.';
           break;
         case Verdict.INTRO:
-          messageText = ['Добро пожаловать в игру!', 'Нажмите пробел для старта.'];
+//          messageText = ['Добро пожаловать в игру!', 'Нажмите пробел для старта.'];
+          messageText = 'Добро пожаловать в игру! Нажмите пробел для старта.';
           break;
       }
       getPauseScreen(this.ctx, messageText);
