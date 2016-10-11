@@ -442,7 +442,6 @@ window.Game = (function() {
           textLine = '',
           textBox = [],
           textWidth = 0,
-          countLine = 1,
           lineHeight = 20,
           marginLeft = x + containerWidth / 2,
           marginTop = y + containerHeight / 2;
@@ -451,7 +450,6 @@ window.Game = (function() {
           textLine = text + words[i] + ' ';
           textWidth = ctx.measureText(textLine).width;
           if (textWidth > containerWidth) {
-            countLine++;
             textBox.push(text);
             text = words[i] + ' ';
           } else {
@@ -459,7 +457,7 @@ window.Game = (function() {
           }
         }
         textBox.push(text);
-        marginTop = marginTop - lineHeight * countLine / 2;
+        marginTop = marginTop - lineHeight * textBox.length / 2;
         for (var j = 0; j < textBox.length; j++) {
           ctx.fillText(textBox[j], marginLeft, marginTop);
           marginTop += lineHeight;
