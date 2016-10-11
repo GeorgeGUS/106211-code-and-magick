@@ -410,6 +410,8 @@ window.Game = (function() {
     _drawPauseScreen: function() {
       var coordinateX = 320,
         coordinateY = 60,
+        containerWidth = 280,
+        containerHeight = 140,
         messageText = '';
 
       var getPauseScreen = function(ctx, message) {
@@ -421,11 +423,11 @@ window.Game = (function() {
       var drawPath = function(ctx, color, x, y) {
         ctx.fillStyle = color;
         ctx.beginPath();
-        ctx.moveTo(x + 10, y + 10);
-        ctx.lineTo(x + 300, y);
-        ctx.lineTo(x + 270, y + 150);
-        ctx.lineTo(x - 20, y + 170);
-        ctx.lineTo(x + 10, y + 10);
+        ctx.moveTo(x, y);
+        ctx.lineTo(x + containerWidth + 10, y - 10);
+        ctx.lineTo(x + containerWidth - 10, y + containerHeight);
+        ctx.lineTo(x - 20, y + containerHeight + 10);
+        ctx.lineTo(x, y);
         ctx.fill();
       };
 
@@ -433,7 +435,7 @@ window.Game = (function() {
         ctx.font = '16px PT Mono';
         ctx.fillStyle = '#000000';
         ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
+        ctx.textBaseline = 'top';
 
         var words = message.split(' '),
           text = '',
@@ -441,8 +443,6 @@ window.Game = (function() {
           textBox = [],
           textWidth = 0,
           countLine = 1,
-          containerWidth = 280,
-          containerHeight = 180,
           lineHeight = 20,
           marginLeft = x + containerWidth / 2,
           marginTop = y + containerHeight / 2;
@@ -459,7 +459,7 @@ window.Game = (function() {
           }
         }
         textBox.push(text);
-        marginTop = y + containerHeight / 2 - lineHeight * countLine / 2;
+        marginTop = marginTop - lineHeight * countLine / 2;
         for (var j = 0; j < textBox.length; j++) {
           ctx.fillText(textBox[j], marginLeft, marginTop);
           marginTop += lineHeight;
