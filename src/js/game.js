@@ -458,8 +458,8 @@ window.Game = (function() {
         }
         textBox.push(text);
         marginTop = marginTop - lineHeight * textBox.length / 2;
-        for (var j = 0; j < textBox.length; j++) {
-          ctx.fillText(textBox[j], marginLeft, marginTop);
+        for (i = 0; i < textBox.length; i++) {
+          ctx.fillText(textBox[i], marginLeft, marginTop);
           marginTop += lineHeight;
         }
       };
