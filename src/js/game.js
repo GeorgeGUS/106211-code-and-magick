@@ -410,12 +410,12 @@ window.Game = (function() {
     _drawPauseScreen: function() {
       var coordinateX = 320,
         coordinateY = 60,
-        messageText;
+        messageText = '';
 
       var getPauseScreen = function(ctx, message) {
         drawPath(ctx, 'rgba(0, 0, 0, 0.7)', coordinateX + 10, coordinateY + 10);
         drawPath(ctx, '#ffffff', coordinateX, coordinateY);
-        drawText(ctx, message, 300);
+        drawText(ctx, message, coordinateX, coordinateY);
       };
 
       var drawPath = function(ctx, color, x, y) {
@@ -429,39 +429,45 @@ window.Game = (function() {
         ctx.fill();
       };
 
-      var drawText = function(ctx, message) {
+      var drawText = function(ctx, message, x, y) {
         ctx.font = '16px PT Mono';
         ctx.fillStyle = '#000000';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
+
         var words = message.split(' '),
           text = '',
+          textLine = '',
+          textBox = [],
+          textWidth = 0,
+          countLine = 1,
           containerWidth = 280,
+          containerHeight = 180,
           lineHeight = 20,
-          marginLeft = coordinateX + 140,
-          marginTop = coordinateY + 90;        
+          marginLeft = x + containerWidth / 2,
+          marginTop = y + containerHeight / 2;
+
         for (var i = 0; i < words.length; i++) {
-          var textLine = text + words[i] + ' ';
-          var textWidth = ctx.measureText(textLine).width;
-          
+          textLine = text + words[i] + ' ';
+          textWidth = ctx.measureText(textLine).width;
           if (textWidth > containerWidth) {
-            ctx.fillText(text, marginLeft, marginTop);
-            text = words[i] + ' ';            
-            marginTop += lineHeight;
+            countLine++;
+            textBox.push(text);
+            text = words[i] + ' ';
           } else {
             text = textLine;
           }
         }
-        ctx.fillText(text, marginLeft, marginTop);
-//        for (var i = 0; i < message.length; i++) {        
-//            coordinateY = coordinateY - message.length * 10;
-//          ctx.fillText(message[i], coordinateX + 140, coordinateY + 90 + i * 20);
-//        }
+        textBox.push(text);
+        marginTop = y + containerHeight / 2 - lineHeight * countLine / 2;
+        for (var j = 0; j < textBox.length; j++) {
+          ctx.fillText(textBox[j], marginLeft, marginTop);
+          marginTop += lineHeight;
+        }
       };
 
       switch (this.state.currentStatus) {
         case Verdict.WIN:
-//          messageText = ['Поздравляем, вы победили!', 'Так держать!;)'];
           messageText = 'Поздравляем, вы победили! Так держать!;)';
           break;
         case Verdict.FAIL:
@@ -471,7 +477,6 @@ window.Game = (function() {
           messageText = 'Игра поставлена на паузу. Пробел для продолжения.';
           break;
         case Verdict.INTRO:
-//          messageText = ['Добро пожаловать в игру!', 'Нажмите пробел для старта.'];
           messageText = 'Добро пожаловать в игру! Нажмите пробел для старта.';
           break;
       }
