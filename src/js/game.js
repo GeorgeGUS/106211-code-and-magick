@@ -410,48 +410,72 @@ window.Game = (function() {
     _drawPauseScreen: function() {
       var coordinateX = 320,
         coordinateY = 60,
-        messageText;
+        containerWidth = 280,
+        containerHeight = 140,
+        messageText = '';
 
       var getPauseScreen = function(ctx, message) {
         drawPath(ctx, 'rgba(0, 0, 0, 0.7)', coordinateX + 10, coordinateY + 10);
         drawPath(ctx, '#ffffff', coordinateX, coordinateY);
-        drawText(ctx, message);
+        drawText(ctx, message, coordinateX, coordinateY);
       };
 
       var drawPath = function(ctx, color, x, y) {
         ctx.fillStyle = color;
         ctx.beginPath();
-        ctx.moveTo(x + 10, y + 10);
-        ctx.lineTo(x + 300, y);
-        ctx.lineTo(x + 270, y + 150);
-        ctx.lineTo(x - 20, y + 170);
-        ctx.lineTo(x + 10, y + 10);
+        ctx.moveTo(x, y);
+        ctx.lineTo(x + containerWidth + 10, y - 10);
+        ctx.lineTo(x + containerWidth - 10, y + containerHeight);
+        ctx.lineTo(x - 20, y + containerHeight + 10);
+        ctx.lineTo(x, y);
         ctx.fill();
       };
 
-      var drawText = function(ctx, message) {
+      var drawText = function(ctx, message, x, y) {
         ctx.font = '16px PT Mono';
         ctx.fillStyle = '#000000';
         ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        coordinateY = coordinateY - message.length * 10;
-        for (var i = 0; i < message.length; i++) {
-          ctx.fillText(message[i], coordinateX + 140, coordinateY + 90 + i * 20);
+        ctx.textBaseline = 'top';
+
+        var words = message.split(' '),
+          text = '',
+          textLine = '',
+          textBox = [],
+          textWidth = 0,
+          lineHeight = 20,
+          marginLeft = x + containerWidth / 2,
+          marginTop = y + containerHeight / 2;
+
+        for (var i = 0; i < words.length; i++) {
+          textLine = text + words[i] + ' ';
+          textWidth = ctx.measureText(textLine).width;
+          if (textWidth > containerWidth) {
+            textBox.push(text);
+            text = words[i] + ' ';
+          } else {
+            text = textLine;
+          }
+        }
+        textBox.push(text);
+        marginTop = marginTop - lineHeight * textBox.length / 2;
+        for (i = 0; i < textBox.length; i++) {
+          ctx.fillText(textBox[i], marginLeft, marginTop);
+          marginTop += lineHeight;
         }
       };
 
       switch (this.state.currentStatus) {
         case Verdict.WIN:
-          messageText = ['Поздравляем, вы победили!', 'Так держать!;)'];
+          messageText = 'Поздравляем, вы победили! Так держать!;)';
           break;
         case Verdict.FAIL:
-          messageText = ['Время вышло! Вы проиграли!'];
+          messageText = 'Время вышло! Вы проиграли!';
           break;
         case Verdict.PAUSE:
-          messageText = ['Игра поставлена на паузу.', 'Пробел для продолжения.'];
+          messageText = 'Игра поставлена на паузу. Пробел для продолжения.';
           break;
         case Verdict.INTRO:
-          messageText = ['Добро пожаловать в игру!', 'Нажмите пробел для старта.'];
+          messageText = 'Добро пожаловать в игру! Нажмите пробел для старта.';
           break;
       }
       getPauseScreen(this.ctx, messageText);
