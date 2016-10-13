@@ -27,13 +27,37 @@ window.form = (function() {
     return mark;
   };
 
-  for (var i = 0; i < marks.length; i++) {
-    marks[i].onchange = function() {
-      getMarkValue();
+  /**
+   * Конструктор объекта Game. Создает canvas, добавляет обработчики событий
+   * и показывает приветственный экран.
+   * @param {Element} fieldInput
+   * @param {Element} fieldLabel
+   */
+  function validateField(fieldInput, fieldLabel) {
+    for (var i = 0; i < marks.length; i++) {
+      marks[i].onchange = function() {
+        fieldInput.required = getMarkValue() < AVERAGE_MARK;
+      };
+    }
+    fieldInput.oninput = function() {
+      if (fieldInput.value === '') {
+        fieldLabel.hidden = false;
+        sendReviewButton.disabled = true;
+      } else {
+        fieldLabel.hidden = true;
+        sendReviewButton.disabled = false;
+      }
     };
   }
+  //Функция валидации формы
+  function validateForm() {
+    userName.required = true;
+    validateField(userName, unfilledName);
+    validateField(userReview, unfilledReview);
+    unfilledBlock.hidden = (unfilledName.hidden && unfilledReview.hidden);//не работает
+  }
 
-  getMarkValue();
+  validateForm();
 
   var form = {
     onClose: null,
