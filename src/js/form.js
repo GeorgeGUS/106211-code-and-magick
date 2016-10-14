@@ -41,14 +41,17 @@ window.form = (function() {
       };
     }
 
-    sendReviewButton.disabled = true;
-
+    /**
+     * Проверка поля на наличие символов.
+     * Скрытие ссылок на незаполненные поля.
+     * Деактивация кнопки отправки.
+     */
     fieldInput.oninput = function() {
-      console.log('Пустая строка: ' + fieldInput.value !== ''); //для отладки
-      console.log('Не пробел: ' + fieldInput.value !== /\s/gi); //для отладки
-      var valid = fieldInput.value !== '' && fieldInput.value !== /\s/gi; //нужно доработать паттерн проверки на ввод текста
-      fieldLabel.hidden = !valid;
-      sendReviewButton.disabled = valid;
+      var valid = fieldInput.value.trim() !== '';
+      fieldLabel.hidden = valid;
+      sendReviewButton.disabled = !valid;
+
+      //скрывать блок ссылок на поля, если заполнены оба поля
       if (unfilledName.hidden && unfilledReview.hidden) {
         unfilledBlock.style.display = 'none';
       } else {
