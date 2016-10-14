@@ -28,33 +28,40 @@ window.form = (function() {
   };
 
   /**
-   * Конструктор объекта Game. Создает canvas, добавляет обработчики событий
-   * и показывает приветственный экран.
+   * Валидация полей формы отзыва.
    * @param {Element} fieldInput
    * @param {Element} fieldLabel
    */
   function validateField(fieldInput, fieldLabel) {
+
+    //если оценка ниже средней, сделать поле обязательным
     for (var i = 0; i < marks.length; i++) {
       marks[i].onchange = function() {
         fieldInput.required = getMarkValue() < AVERAGE_MARK;
       };
     }
+
+    sendReviewButton.disabled = true;
+
     fieldInput.oninput = function() {
-      if (fieldInput.value === '') {
-        fieldLabel.hidden = false;
-        sendReviewButton.disabled = true;
+      console.log('Пустая строка: ' + fieldInput.value !== ''); //для отладки
+      console.log('Не пробел: ' + fieldInput.value !== /\s/gi); //для отладки
+      var valid = fieldInput.value !== '' && fieldInput.value !== /\s/gi; //нужно доработать паттерн проверки на ввод текста
+      fieldLabel.hidden = !valid;
+      sendReviewButton.disabled = valid;
+      if (unfilledName.hidden && unfilledReview.hidden) {
+        unfilledBlock.style.display = 'none';
       } else {
-        fieldLabel.hidden = true;
-        sendReviewButton.disabled = false;
+        unfilledBlock.style.display = 'inline-block';
       }
     };
   }
-  //Функция валидации формы
+
+  //Валидация формы отзыва.
   function validateForm() {
     userName.required = true;
     validateField(userName, unfilledName);
     validateField(userReview, unfilledReview);
-    unfilledBlock.hidden = (unfilledName.hidden && unfilledReview.hidden);//не работает
   }
 
   validateForm();
