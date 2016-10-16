@@ -34,33 +34,38 @@ window.form = (function() {
   var validateName = function() {
     var valid = userName.value.trim() !== '';
     unfilledName.hidden = valid;
-    sendReviewButton.disabled = !valid;
+    return valid;
   };
 
   //Валидация поля отзыва
   var validateReview = function() {
-    var valid = userReview.value.trim() !== '' || !(checkNegativeMark());
-    userReview.required = checkNegativeMark();
+    var markState = checkNegativeMark();
+    var valid = userReview.value.trim() !== '' || !markState;
+    userReview.required = markState;
     unfilledReview.hidden = valid;
-    sendReviewButton.disabled = !valid;
+    return valid;
+  };
+
+  //Валидация всей формы отзыва
+  var validateForm = function() {
+    var nameIsValid = validateName();
+    var reviewIsValid = validateReview();
+    sendReviewButton.disabled = !(nameIsValid && reviewIsValid);
+    if (nameIsValid && reviewIsValid) {
+      unfilledBlock.style.display = 'none';
+    } else {
+      unfilledBlock.style.display = 'inline-block';
+    }
   };
 
   //Добавялем обработчики на блок оценок и поля ввода.
   for (var i = 0; i < marks.length; i++) {
-    marks[i].onchange = validateReview;
+    marks[i].onchange = validateForm;
   }
-  userName.oninput = validateName;
-  userReview.oninput = validateReview;
+  userName.oninput = validateForm;
+  userReview.oninput = validateForm;
 
-  //Если заполнены оба поля, скрывать блок ссылок на них.
-  if (unfilledName.hidden && unfilledReview.hidden) {
-    unfilledBlock.style.display = 'none';
-  } else {
-    unfilledBlock.style.display = 'inline-block';
-  }
-
-  validateName();
-  validateReview();
+  validateForm();
 
 
 
