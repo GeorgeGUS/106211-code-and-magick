@@ -17,27 +17,36 @@ window.form = (function() {
   var unfilledName = document.querySelector('.review-fields-name');
   var unfilledReview = document.querySelector('.review-fields-text');
 
-  //Поле ввода имени обязательно всегда.
+  /** Установка обязательности поля имени */
   userName.required = true;
 
-  //Проверка отрицательной оценки
+  /**
+   * Проверка отрицательной оценки
+   * @returns {Boolean}
+   */
   var checkNegativeMark = function() {
     for (var i = 0; i < marks.length; i++) {
       if (marks[i].checked) {
-        var mark = marks[i].value;
+        var mark = parseInt(marks[i].value, 0);
       }
     }
     return mark < AVERAGE_MARK;
   };
 
-  //Валидация поля имени
+  /**
+   * Валидация поля имени
+   * @returns {Boolean}
+   */
   var validateName = function() {
     var valid = userName.value.trim() !== '';
     unfilledName.hidden = valid;
     return valid;
   };
 
-  //Валидация поля отзыва
+  /**
+   * Валидация поля отзыва
+   * @returns {Boolean}
+   */
   var validateReview = function() {
     var markState = checkNegativeMark();
     var valid = userReview.value.trim() !== '' || !markState;
@@ -46,7 +55,10 @@ window.form = (function() {
     return valid;
   };
 
-  //Валидация всей формы отзыва
+  /** Валидация всей формы отзыва
+   * Если оба поля не валидны, отключает кнопку отправки формы
+   * Если оба поля валидны, скрывает блок ссылок на них
+   */
   var validateForm = function() {
     var nameIsValid = validateName();
     var reviewIsValid = validateReview();
@@ -58,7 +70,6 @@ window.form = (function() {
     }
   };
 
-  //Добавялем обработчики на блок оценок и поля ввода.
   for (var i = 0; i < marks.length; i++) {
     marks[i].onchange = validateForm;
   }
