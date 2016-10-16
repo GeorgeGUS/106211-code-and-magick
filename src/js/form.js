@@ -17,65 +17,52 @@ window.form = (function() {
   var unfilledName = document.querySelector('.review-fields-name');
   var unfilledReview = document.querySelector('.review-fields-text');
 
-  //Получение значения оценки
-  var getMarkValue = function() {
+  //Поле ввода имени обязательно всегда.
+  userName.required = true;
+
+  //Проверка отрицательной оценки
+  var checkNegativeMark = function() {
     for (var i = 0; i < marks.length; i++) {
       if (marks[i].checked) {
         var mark = marks[i].value;
       }
     }
-    return mark;
+    return mark < AVERAGE_MARK;
   };
 
-  /**
-   * Проверка полей формы отзыва на валидность.
-   * @param {Element} fieldInput
-   * @param {Element} fieldLabel
-   */
-  var validate = function(fieldInput, fieldLabel) {
-    /**
-     * Проверка поля на наличие символов и .
-     * Скрытие ссылок на незаполненные поля.
-     * Деактивация кнопки отправки.
-     */
-    var valid = fieldInput.value.trim() !== '' || getMarkValue() >= AVERAGE_MARK;
-    fieldLabel.hidden = valid;
+  //Валидация поля имени
+  var validateName = function() {
+    var valid = userName.value.trim() !== '';
+    unfilledName.hidden = valid;
     sendReviewButton.disabled = !valid;
-
-    //Если заполнены оба поля, скрывать блок ссылок на них.
-    if (unfilledName.hidden && unfilledReview.hidden) {
-      unfilledBlock.style.display = 'none';
-    } else {
-      unfilledBlock.style.display = 'inline-block';
-    }
   };
 
-  //Поле ввода имени обязательно всегда.
-  userName.required = true;
+  //Валидация поля отзыва
+  var validateReview = function() {
+    var valid = userReview.value.trim() !== '' || !(checkNegativeMark());
+    userReview.required = checkNegativeMark();
+    unfilledReview.hidden = valid;
+    sendReviewButton.disabled = !valid;
+  };
 
-  /**
-   * Следим за изменением оценки.
-   * Если оценка ниже средней, делаем поле ввода отзыва обязательным
-   * и проверяем его на валидность.
-   */
+  //Добавялем обработчики на блок оценок и поля ввода.
   for (var i = 0; i < marks.length; i++) {
-    marks[i].onchange = function() {
-      userReview.required = getMarkValue() < AVERAGE_MARK;
-      validate(userReview, unfilledReview);
-    };
+    marks[i].onchange = validateReview;
+  }
+  userName.oninput = validateName;
+  userReview.oninput = validateReview;
+
+  //Если заполнены оба поля, скрывать блок ссылок на них.
+  if (unfilledName.hidden && unfilledReview.hidden) {
+    unfilledBlock.style.display = 'none';
+  } else {
+    unfilledBlock.style.display = 'inline-block';
   }
 
-  // var check = validate;
-  // userName.oninput = check(userName, unfilledName);
-  // userReview.oninput = check(userReview, unfilledReview);
+  validateName();
+  validateReview();
 
-  userName.oninput = function() {
-    validate(this, unfilledName);
-  };
 
-  userReview.oninput = function() {
-    validate(this, unfilledReview);
-  };
 
   var form = {
     onClose: null,
