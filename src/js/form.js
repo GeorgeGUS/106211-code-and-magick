@@ -9,65 +9,73 @@ window.form = (function() {
 
   var formContainer = document.querySelector('.overlay-container');
   var formCloseButton = document.querySelector('.review-form-close');
-  var userName = document.querySelector('#review-name');
-  var userReview = document.querySelector('#review-text');
+  var userName = document.getElementById('review-name');
+  var userReview = document.getElementById('review-text');
   var marks = document.querySelectorAll('input[name="review-mark"]');
   var sendReviewButton = document.querySelector('.review-submit');
   var unfilledBlock = document.querySelector('.review-fields');
   var unfilledName = document.querySelector('.review-fields-name');
   var unfilledReview = document.querySelector('.review-fields-text');
 
-  //Получаем значение оценки пользователя
+  //Получение значения оценки
   var getMarkValue = function() {
     for (var i = 0; i < marks.length; i++) {
       if (marks[i].checked) {
-        var mark = marks[i].getAttribute('value');
+        var mark = marks[i].value;
       }
     }
     return mark;
   };
 
   /**
-   * Валидация полей формы отзыва.
+   * Проверка полей формы отзыва на валидность.
    * @param {Element} fieldInput
    * @param {Element} fieldLabel
    */
-  function validateField(fieldInput, fieldLabel) {
-
-    //если оценка ниже средней, сделать поле обязательным
-    for (var i = 0; i < marks.length; i++) {
-      marks[i].onchange = function() {
-        fieldInput.required = getMarkValue() < AVERAGE_MARK;
-      };
-    }
-
+  var validate = function(fieldInput, fieldLabel) {
     /**
-     * Проверка поля на наличие символов.
+     * Проверка поля на наличие символов и .
      * Скрытие ссылок на незаполненные поля.
      * Деактивация кнопки отправки.
      */
-    fieldInput.oninput = function() {
-      var valid = fieldInput.value.trim() !== '';
-      fieldLabel.hidden = valid;
-      sendReviewButton.disabled = !valid;
+    var valid = fieldInput.value.trim() !== '' || getMarkValue() >= AVERAGE_MARK;
+    fieldLabel.hidden = valid;
+    sendReviewButton.disabled = !valid;
 
-      //скрывать блок ссылок на поля, если заполнены оба поля
-      if (unfilledName.hidden && unfilledReview.hidden) {
-        unfilledBlock.style.display = 'none';
-      } else {
-        unfilledBlock.style.display = 'inline-block';
-      }
+    //Если заполнены оба поля, скрывать блок ссылок на них.
+    if (unfilledName.hidden && unfilledReview.hidden) {
+      unfilledBlock.style.display = 'none';
+    } else {
+      unfilledBlock.style.display = 'inline-block';
+    }
+  };
+
+  //Поле ввода имени обязательно всегда.
+  userName.required = true;
+
+  /**
+   * Следим за изменением оценки.
+   * Если оценка ниже средней, делаем поле ввода отзыва обязательным
+   * и проверяем его на валидность.
+   */
+  for (var i = 0; i < marks.length; i++) {
+    marks[i].onchange = function() {
+      userReview.required = getMarkValue() < AVERAGE_MARK;
+      validate(userReview, unfilledReview);
     };
   }
 
-  //Валидация формы отзыва.
-  function validateForm() {
-    userName.required = true;
-    validateField(userName, unfilledName);
-    validateField(userReview, unfilledReview);
-  }
+  // var check = validate;
+  // userName.oninput = check(userName, unfilledName);
+  // userReview.oninput = check(userReview, unfilledReview);
 
-  validateForm();
+  userName.oninput = function() {
+    validate(this, unfilledName);
+  };
+
+  userReview.oninput = function() {
+    validate(this, unfilledReview);
+  };
 
   var form = {
     onClose: null,
