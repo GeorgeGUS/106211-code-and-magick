@@ -21,13 +21,13 @@ window.form = (function() {
   var Cookies = window.Cookies;
 
   /** Автоподстановка значений оценки и имени при наличии их в cookies */
-  if (Cookies.get('review-mark') === undefined) {
+  if (typeof Cookies.get('review-mark') === 'undefined') {
     marks[5 - AVERAGE_MARK].checked = true;
   } else {
     var markNumber = parseInt(Cookies.get('review-mark'), 0);
     marks[5 - markNumber].checked = true;
   }
-  if (Cookies.get('review-name') === undefined) {
+  if (typeof Cookies.get('review-name') === 'undefined') {
     userName.value = '';
   } else {
     userName.value = Cookies.get('review-name');
