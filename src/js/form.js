@@ -23,16 +23,16 @@ window.form = (function() {
   userName.required = true;
 
   /**
-   * Проверка отрицательной оценки
-   * @returns {Boolean}
+   * Получение значения оценки
+   * @returns {Number}
    */
-  var checkNegativeMark = function() {
+  var getMarkValue = function() {
     for (var i = 0; i < marks.length; i++) {
       if (marks[i].checked) {
         var mark = parseInt(marks[i].value, 0);
       }
     }
-    return mark < AVERAGE_MARK;
+    return mark;
   };
 
   /**
@@ -50,7 +50,7 @@ window.form = (function() {
    * @returns {Boolean}
    */
   var validateReview = function() {
-    var markState = checkNegativeMark();
+    var markState = getMarkValue() < AVERAGE_MARK;
     var valid = userReview.value.trim() !== '' || !markState;
     userReview.required = markState;
     unfilledReview.hidden = valid;
