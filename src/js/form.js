@@ -8,6 +8,7 @@ window.form = (function() {
   var AVERAGE_MARK = 3;
 
   var formContainer = document.querySelector('.overlay-container');
+  var formWindow = document.querySelector('.review-form');
   var formCloseButton = document.querySelector('.review-form-close');
   var userName = document.getElementById('review-name');
   var userReview = document.getElementById('review-text');
@@ -16,26 +17,24 @@ window.form = (function() {
   var unfilledBlock = document.querySelector('.review-fields');
   var unfilledName = document.querySelector('.review-fields-name');
   var unfilledReview = document.querySelector('.review-fields-text');
-  var currentDate = new Date();
-  var GHopperBirthday = new Date(currentDate.getFullYear(), 11, 9);
   var Cookies = window.Cookies;
 
-  /** Автоподстановка значений оценки и имени при наличии их в cookies */
-  if (typeof Cookies.get('review-mark') === 'undefined') {
-    marks[5 - AVERAGE_MARK].checked = true;
-  } else {
-    var markNumber = parseInt(Cookies.get('review-mark'), 0);
-    marks[5 - markNumber].checked = true;
-  }
-  if (typeof Cookies.get('review-name') === 'undefined') {
-    userName.value = '';
-  } else {
-    userName.value = Cookies.get('review-name');
-  }
-
-
-  /** Установка обязательности поля имени */
-  userName.required = true;
+  /**
+   * Автоподстановка значений оценки и имени при наличии их в cookies
+   */
+  var getCookies = function() {
+    if (typeof Cookies.get('review-mark') === 'undefined') {
+      marks[5 - AVERAGE_MARK].checked = true;
+    } else {
+      var markNumber = parseInt(Cookies.get('review-mark'), 0);
+      marks[5 - markNumber].checked = true;
+    }
+    if (typeof Cookies.get('review-name') === 'undefined') {
+      userName.value = '';
+    } else {
+      userName.value = Cookies.get('review-name');
+    }
+  };
 
   /**
    * Получение значения оценки
@@ -56,6 +55,7 @@ window.form = (function() {
    */
   var validateName = function() {
     var valid = userName.value.trim() !== '';
+    userName.required = true;
     unfilledName.hidden = valid;
     return valid;
   };
@@ -88,20 +88,14 @@ window.form = (function() {
     }
   };
 
-  for (var i = 0; i < marks.length; i++) {
-    marks[i].onchange = validateForm;
-  }
-  userName.oninput = validateForm;
-  userReview.oninput = validateForm;
-
-  validateForm();
-
   /**
    * Получение срока жизни файла сookie в днях, начиная
    * с последнего прошедшего дня рождения Грейс Хоппер
    * @returns {Number}
    */
   var getCookieLifeTime = function() {
+    var currentDate = new Date();
+    var GHopperBirthday = new Date(currentDate.getFullYear(), 11, 9);
     var cookieLifeTime;
     if (GHopperBirthday > currentDate) {
       GHopperBirthday.setFullYear(currentDate.getFullYear() - 1);
@@ -122,7 +116,16 @@ window.form = (function() {
     Cookies.set('review-name', nameValue, {expires: daysCount});
   };
 
-  sendReviewButton.onclick = setCookies;
+  getCookies();
+  validateForm();
+
+  for (var i = 0; i < marks.length; i++) {
+    marks[i].onchange = validateForm;
+  }
+  userName.oninput = validateForm;
+  userReview.oninput = validateForm;
+  formWindow.onsumbit = setCookies;
+
 
   var form = {
     onClose: null,
