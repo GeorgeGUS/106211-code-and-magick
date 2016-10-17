@@ -16,6 +16,8 @@ window.form = (function() {
   var unfilledBlock = document.querySelector('.review-fields');
   var unfilledName = document.querySelector('.review-fields-name');
   var unfilledReview = document.querySelector('.review-fields-text');
+  var currentDate = new Date();
+  var GHopperBirthday = new Date(currentDate.getFullYear(), 11, 9);
 
   /** Установка обязательности поля имени */
   userName.required = true;
@@ -79,6 +81,19 @@ window.form = (function() {
   validateForm();
 
 
+  /**
+   * Получение срока жизни файла сookie в днях, начиная
+   * с последнего прошедшего дня рождения Грейс Хоппер
+   * @returns {Number}
+   */
+  var getCookieLifeTime = function() {
+    var cookieLifeTime;
+    if (GHopperBirthday > currentDate) {
+      GHopperBirthday.setFullYear(currentDate.getFullYear() - 1);
+    }
+    cookieLifeTime = Math.ceil((currentDate - GHopperBirthday) / (3600 * 24 * 1000));
+    return cookieLifeTime;
+  };
 
   var form = {
     onClose: null,
