@@ -86,6 +86,7 @@ window.form = (function() {
     } else {
       unfilledBlock.style.display = 'inline-block';
     }
+    setCookies();
   };
 
   /**
@@ -124,7 +125,7 @@ window.form = (function() {
   }
   userName.oninput = validateForm;
   userReview.oninput = validateForm;
-  formWindow.onsumbit = setCookies;
+  formWindow.onsumbit = validateForm;
 
 
   var form = {
