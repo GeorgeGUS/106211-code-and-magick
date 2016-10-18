@@ -408,61 +408,15 @@ window.Game = (function() {
      * Отрисовка экрана паузы.
      */
     _drawPauseScreen: function() {
-      var coordinateX = 320,
-        coordinateY = 60,
+      var lineHeight = 20,
         containerWidth = 280,
-        containerHeight = 140,
-        messageText = '';
-
-      var getPauseScreen = function(ctx, message) {
-        drawPath(ctx, 'rgba(0, 0, 0, 0.7)', coordinateX + 10, coordinateY + 10);
-        drawPath(ctx, '#ffffff', coordinateX, coordinateY);
-        drawText(ctx, message, coordinateX, coordinateY);
-      };
-
-      var drawPath = function(ctx, color, x, y) {
-        ctx.fillStyle = color;
-        ctx.beginPath();
-        ctx.moveTo(x, y);
-        ctx.lineTo(x + containerWidth + 10, y - 10);
-        ctx.lineTo(x + containerWidth - 10, y + containerHeight);
-        ctx.lineTo(x - 20, y + containerHeight + 10);
-        ctx.lineTo(x, y);
-        ctx.fill();
-      };
-
-      var drawText = function(ctx, message, x, y) {
-        ctx.font = '16px PT Mono';
-        ctx.fillStyle = '#000000';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'top';
-
-        var words = message.split(' '),
-          text = '',
-          textLine = '',
-          textBox = [],
-          textWidth = 0,
-          lineHeight = 20,
-          marginLeft = x + containerWidth / 2,
-          marginTop = y + containerHeight / 2;
-
-        for (var i = 0; i < words.length; i++) {
-          textLine = text + words[i] + ' ';
-          textWidth = ctx.measureText(textLine).width;
-          if (textWidth > containerWidth) {
-            textBox.push(text);
-            text = words[i] + ' ';
-          } else {
-            text = textLine;
-          }
-        }
-        textBox.push(text);
-        marginTop = marginTop - lineHeight * textBox.length / 2;
-        for (i = 0; i < textBox.length; i++) {
-          ctx.fillText(textBox[i], marginLeft, marginTop);
-          marginTop += lineHeight;
-        }
-      };
+        containerHeight = 120,
+        coordinateX = 320,
+        coordinateY = 30,
+        coordinateTextY = coordinateY + containerHeight / 2,
+        messageText = '',
+        marginLeft = coordinateX + containerWidth / 2,
+        marginTop = coordinateTextY - containerHeight / 2;
 
       switch (this.state.currentStatus) {
         case Verdict.WIN:
@@ -478,7 +432,97 @@ window.Game = (function() {
           messageText = 'Добро пожаловать в игру! Нажмите пробел для старта.';
           break;
       }
-      getPauseScreen(this.ctx, messageText);
+
+      /**
+       * Преобразование строки сообщения в массив строк длиной с ширину контейнера
+       * @param {Object} ctx
+       * @param {String} message
+       * @param {Number} x
+       * @param {Number} y
+       * @returns {Array} textArray
+       */
+      var convertTextToArray = function(ctx, message) {
+        ctx.font = '16px PT Mono';
+        var text = '',
+          words = message.split(' '),
+          textArray = [];
+        for (var i = 0; i < words.length; i++) {
+          var textLine = text + words[i] + ' ';
+          var textWidth = ctx.measureText(textLine).width;
+          if (textWidth > containerWidth) {
+            textArray.push(text);
+            text = words[i] + ' ';
+          } else {
+            text = textLine;
+          }
+        }
+        textArray.push(text);
+        return textArray;
+      };
+
+      //Сохранение массива строк текста в глобальную переменную
+      var textArray = convertTextToArray(this.ctx, messageText);
+
+      /**
+       * Получение высоты контейнера в зависимости от количества строк текста
+       */
+      var getPauseScreenHeight = function() {
+        if ((lineHeight * textArray.length) > containerHeight) {
+          containerHeight = lineHeight * (textArray.length);
+          coordinateTextY = coordinateY + containerHeight / 2;
+          marginTop = coordinateY + coordinateTextY - containerHeight / 2;
+        }
+      };
+
+      /**
+       * Вывод отформатированного массива строк
+       * @param {Object} ctx
+       * @param {Array} textArray
+       */
+      var drawTextArray = function(ctx, array) {
+        getPauseScreenHeight();
+        ctx.font = '16px PT Mono';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle = '#000000';
+        marginTop = coordinateTextY - lineHeight * (array.length - 1) / 2;
+        for (var i = 0; i < array.length; i++) {
+          ctx.fillText(array[i], marginLeft, marginTop);
+          marginTop += lineHeight;
+        }
+      };
+
+      /**
+       * Рисование контейнера сообщения
+       * @param {Object} ctx
+       * @param {String} color
+       * @param {Number} x
+       * @param {Number} y
+       */
+      var drawPath = function(ctx, color, x, y) {
+        getPauseScreenHeight();
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x + containerWidth + 10, y - 10);
+        ctx.lineTo(x + containerWidth - 10, y + containerHeight);
+        ctx.lineTo(x - 20, y + containerHeight + 10);
+        ctx.lineTo(x, y);
+        ctx.fill();
+      };
+
+      /**
+       * Вывод на экран сообщения с текстом
+       * @param {Object} ctx
+       * @param {String} arr
+       */
+      var getPauseScreen = function(ctx, arr) {
+        drawPath(ctx, 'rgba(0, 0, 0, 0.7)', coordinateX + 10, coordinateY + 10);
+        drawPath(ctx, '#ffffff', coordinateX, coordinateY);
+        drawTextArray(ctx, arr);
+      };
+
+      getPauseScreen(this.ctx, textArray);
     },
 
     /**
