@@ -434,11 +434,9 @@ window.Game = (function() {
       }
 
       /**
-       * Преобразование строки сообщения в массив строк длиной с ширину контейнера
+       * Преобразование строки сообщения в массив строк длиной с ширину контейнера.
        * @param {Object} ctx
-       * @param {String} message
-       * @param {Number} x
-       * @param {Number} y
+       * @param {string} message
        * @returns {Array} textArray
        */
       var convertTextToArray = function(ctx, message) {
@@ -460,27 +458,25 @@ window.Game = (function() {
         return textArray;
       };
 
-      //Сохранение массива строк текста в глобальную переменную
-      var textArray = convertTextToArray(this.ctx, messageText);
-
       /**
-       * Получение высоты контейнера в зависимости от количества строк текста
+       * Получение высоты контейнера в зависимости от количества строк текста.
+       * @param {Array} array
        */
-      var getPauseScreenHeight = function() {
-        if ((lineHeight * textArray.length) > containerHeight) {
-          containerHeight = lineHeight * (textArray.length);
+      var getPauseScreenHeight = function(array) {
+        if ((lineHeight * array.length) > containerHeight) {
+          containerHeight = lineHeight * (array.length);
           coordinateTextY = coordinateY + containerHeight / 2;
           marginTop = coordinateY + coordinateTextY - containerHeight / 2;
         }
       };
 
       /**
-       * Вывод отформатированного массива строк
+       * Вывод отформатированного массива строк.
        * @param {Object} ctx
-       * @param {Array} textArray
+       * @param {Array} array
        */
       var drawTextArray = function(ctx, array) {
-        getPauseScreenHeight();
+        getPauseScreenHeight(array);
         ctx.font = '16px PT Mono';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
@@ -493,14 +489,15 @@ window.Game = (function() {
       };
 
       /**
-       * Рисование контейнера сообщения
+       * Рисование контейнера сообщения.
        * @param {Object} ctx
-       * @param {String} color
-       * @param {Number} x
-       * @param {Number} y
+       * @param {Array} array
+       * @param {string} color
+       * @param {number} x
+       * @param {number} y
        */
-      var drawPath = function(ctx, color, x, y) {
-        getPauseScreenHeight();
+      var drawPath = function(ctx, array, color, x, y) {
+        getPauseScreenHeight(array);
         ctx.fillStyle = color;
         ctx.beginPath();
         ctx.moveTo(x, y);
@@ -512,17 +509,17 @@ window.Game = (function() {
       };
 
       /**
-       * Вывод на экран сообщения с текстом
+       * Вывод на экран сообщения с текстом.
        * @param {Object} ctx
-       * @param {String} arr
+       * @param {string} array
        */
-      var getPauseScreen = function(ctx, arr) {
-        drawPath(ctx, 'rgba(0, 0, 0, 0.7)', coordinateX + 10, coordinateY + 10);
-        drawPath(ctx, '#ffffff', coordinateX, coordinateY);
-        drawTextArray(ctx, arr);
+      var getPauseScreen = function(ctx, array) {
+        drawPath(ctx, array, 'rgba(0, 0, 0, 0.7)', coordinateX + 10, coordinateY + 10);
+        drawPath(ctx, array, '#ffffff', coordinateX, coordinateY);
+        drawTextArray(ctx, array);
       };
 
-      getPauseScreen(this.ctx, textArray);
+      getPauseScreen(this.ctx, convertTextToArray(this.ctx, messageText));
     },
 
     /**
