@@ -1,6 +1,6 @@
 'use strict';
-
-var reviews = [{
+window.reviews = (function() {
+  var reviews = [{
     "author": {
       "name": "Иванов Иван",
       "picture": "img/user-1.jpg"
@@ -138,8 +138,46 @@ var reviews = [{
     "description": "Игра очень интересная. Нравится возможность выбирать между героями, а самое крутое, что есть альтернативные концовки в игре. Она точно стоит своих денег."
   }];
 
-/** Скрыть блок фильтров отзывов. */
-document.querySelector('.reviews-filter').classList.add('invisible');
+/*  <template id="review-template" style="display: none">
+    <article class="review">
+    <img src="" class="review-author" alt="" title="">
+    <span class="review-rating"></span>
+    <p class="review-text"></p>
+    <div class="review-quiz">
+    Полезный отзыв?
+  <span class="review-quiz-answer review-quiz-answer-yes">Да</span>
+    <span class="review-quiz-answer review-quiz-answer-no">Нет</span>
+    </div>
+    </article>
+    </template>*/
 
+  var reviewsFilter = document.querySelector('.reviews-filter');
+  /** Скрыть блок фильтров отзывов. */
+  reviewsFilter.classList.add('invisible');
 
+  /**
+   * Копирование шаблона отзыва
+   */
+  var reviewItems = function() {
+    var reviewsContainer = document.querySelector('.reviews-list');
+    // var template = document.getElementById('review-template');
+    // var article = document.querySelector('.review');
+    reviews.forEach(function (item, i) {
+      reviewsContainer.insertAdjacentHTML('beforeend',
+        '<article class="review">' +
+        '<img src="" class="review-author" alt="" title="">' +
+        '<span class="review-rating"></span>' +
+        '<p class="review-text">' + reviews[i].description + '</p>' +
+        '<div class="review-quiz">' +
+        'Полезный отзыв?' +
+        '<span class="review-quiz-answer review-quiz-answer-yes">Да</span>' +
+        '<span class="review-quiz-answer review-quiz-answer-no">Нет</span>' +
+        '</div>' +
+        '</article>'
+      );
+    });
+  }();
 
+  /** Показать блок фильтров отзывов. */
+  reviewsFilter.classList.remove('invisible');
+})();
