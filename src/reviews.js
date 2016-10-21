@@ -137,23 +137,67 @@ window.reviews = (function() {
     "rating": 5,
     "description": "Игра очень интересная. Нравится возможность выбирать между героями, а самое крутое, что есть альтернативные концовки в игре. Она точно стоит своих денег."
   }];
-
-
   var reviewsFilter = document.querySelector('.reviews-filter');
+  var reviewsContainer = document.querySelector('.reviews-list');
+  var template = document.getElementById('review-template');
+
   /** Скрыть блок фильтров отзывов. */
   reviewsFilter.classList.add('invisible');
 
   /**
-   * Копирование шаблона отзыва
+   * Заполнение шаблона отзыва
+   * @param {Array} reviews
+   * @returns {Template} reviewItem
    */
-  var reviewItems = function() {
-    var reviewsContainer = document.querySelector('.reviews-list');
-    var template = document.getElementById('review-template');
-    reviews.forEach(function (item, i) {
-      template.content.querySelector('.review-text').innerHTML = reviews[i].description;
-      reviewsContainer.appendChild(template.content.cloneNode(true));
+  var getReviewItems = function(reviews) {
+    var reviewItem = template.content.querySelector('.review').cloneNode(true);
+    var reviewAuthor = reviewItem.querySelector('.review-text');
+    var reviewRating = reviewItem.querySelector('.review-rating');
+
+    var authorImage = new Image(124, 124);
+    authorImage.onload = function (event) {
+      reviewItem.querySelector('.review-author').src = event.target.src;
+    };
+
+    authorImage.onerror = function() {
+      reviewItem.classList.add('review-load-failure');
+    };
+
+    authorImage.src = reviews.author.picture;
+    reviewAuthor.textContent = reviews.description;
+
+    switch (reviews.rating) {
+      case 1:
+        reviewRating = reviewRating.classList.add('review-rating-one');
+        break;
+      case 2:
+        reviewRating = reviewRating.classList.add('review-rating-two');
+        break;
+      case 3:
+        reviewRating = reviewRating.classList.add('review-rating-three');
+        break;
+      case 4:
+        reviewRating = reviewRating.classList.add('review-rating-four');
+        break;
+      case 5:
+        reviewRating = reviewRating.classList.add('review-rating-five');
+        break;
+    }
+    return reviewItem;
+  };
+
+
+  /**
+   * Цикл отрисовки отзывов из базы
+   * @param {Array} reviews
+   */
+  var drawReviews = function(reviews) {
+    reviews.forEach(function (review) {
+      reviewsContainer.appendChild(getReviewItems(review));
     });
-  }();
+  };
+
+  drawReviews(reviews);
 
   /** Показать блок фильтров отзывов. */
   reviewsFilter.classList.remove('invisible');
