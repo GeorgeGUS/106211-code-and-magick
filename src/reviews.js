@@ -1,5 +1,12 @@
 'use strict';
-window.reviews = (function() {
+
+(function() {
+  /**
+   * @const
+   * @type {string}
+   */
+  var CLASS_INVISIBLE = 'invisible';
+
   var reviews = [{
     "author": {
       "name": "Иванов Иван",
@@ -137,52 +144,33 @@ window.reviews = (function() {
     "rating": 5,
     "description": "Игра очень интересная. Нравится возможность выбирать между героями, а самое крутое, что есть альтернативные концовки в игре. Она точно стоит своих денег."
   }];
-  var reviewsFilter = document.querySelector('.reviews-filter');
-  var reviewsContainer = document.querySelector('.reviews-list');
-  var template = document.getElementById('review-template');
 
-  /** Скрыть блок фильтров отзывов. */
-  reviewsFilter.classList.add('invisible');
 
   /**
    * Заполнение шаблона отзыва
    * @param {Array} reviews
-   * @returns {Template} reviewItem
+   * @returns {Node} reviewItem
    */
   var getReviewItems = function(reviews) {
-    var reviewItem = template.content.querySelector('.review').cloneNode(true);
-    var reviewAuthor = reviewItem.querySelector('.review-text');
-    var reviewRating = reviewItem.querySelector('.review-rating');
+    var template = document.getElementById('review-template'),
+      templateContainer = 'content' in template ? template.content : template,
+      reviewItem = templateContainer.cloneNode(true),
+      reviewContainer = reviewItem.querySelector('.review'),
+      reviewPicture = reviewItem.querySelector('.review-author'),
+      reviewText = reviewItem.querySelector('.review-text'),
+      ratingClasses = ['one', 'two', 'three', 'four', 'five'],
+      authorImage = new Image(124, 124);
 
-    var authorImage = new Image(124, 124);
-    authorImage.onload = function (event) {
-      reviewItem.querySelector('.review-author').src = event.target.src;
+    authorImage.onload = function() {
+      reviewPicture.src = this.src;
     };
-
     authorImage.onerror = function() {
-      reviewItem.classList.add('review-load-failure');
+      reviewContainer.classList.add('review-load-failure');
     };
-
     authorImage.src = reviews.author.picture;
-    reviewAuthor.textContent = reviews.description;
+    reviewText.textContent = reviews.description;
+    reviewItem.querySelector('.review-rating').classList.add('review-rating-' + ratingClasses[reviews.rating - 1]);
 
-    switch (reviews.rating) {
-      case 1:
-        reviewRating = reviewRating.classList.add('review-rating-one');
-        break;
-      case 2:
-        reviewRating = reviewRating.classList.add('review-rating-two');
-        break;
-      case 3:
-        reviewRating = reviewRating.classList.add('review-rating-three');
-        break;
-      case 4:
-        reviewRating = reviewRating.classList.add('review-rating-four');
-        break;
-      case 5:
-        reviewRating = reviewRating.classList.add('review-rating-five');
-        break;
-    }
     return reviewItem;
   };
 
@@ -192,13 +180,15 @@ window.reviews = (function() {
    * @param {Array} reviews
    */
   var drawReviews = function(reviews) {
-    reviews.forEach(function (review) {
+    var reviewsFilter = document.querySelector('.reviews-filter');
+    var reviewsContainer = document.querySelector('.reviews-list');
+
+    reviewsFilter.classList.add(CLASS_INVISIBLE);
+    reviews.forEach(function(review) {
       reviewsContainer.appendChild(getReviewItems(review));
     });
+    reviewsFilter.classList.remove(CLASS_INVISIBLE);
   };
 
   drawReviews(reviews);
-
-  /** Показать блок фильтров отзывов. */
-  reviewsFilter.classList.remove('invisible');
 })();
