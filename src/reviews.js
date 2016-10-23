@@ -21,15 +21,13 @@
    * @param {Function} callback
    * @param {String} callbackName
    */
-  var loadReviews = function(url, callback, callbackName) {
+  var loadJSONP = function(url, callback, callbackName) {
     var script = document.createElement('script');
 
-    if (!callbackName) {
-      callbackName = '__getReviewsCallback';
+    if (callbackName === undefined) {
+      callbackName = '__getCallback';
     }
-    window[callbackName] = function(data) {
-      window.reviews = callback(data);
-    };
+    window[callbackName] = callback;
     script.src = url + '?callback=' + callbackName;
     document.body.appendChild(script);
   };
@@ -77,5 +75,5 @@
     reviewsFilter.classList.remove(CLASS_INVISIBLE);
   };
 
-  loadReviews(REVIEWS_LOAD_URL ,drawReviews, '__getReviewsCallback');
+  loadJSONP(REVIEWS_LOAD_URL ,drawReviews, '__getCallback');
 })();
