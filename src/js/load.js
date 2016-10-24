@@ -6,10 +6,10 @@
  * @param {Function} callback
  * @param {String} callbackName
  */
-module.exports = function (url, callback, callbackName) {
+module.exports = function(url, callback, callbackName) {
   var script = document.createElement('script');
 
-  if (callbackName === undefined) {
+  if (typeof callbackName === 'undefined') {
     callbackName = '__getCallback';
   }
   window[callbackName] = callback;

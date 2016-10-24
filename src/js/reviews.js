@@ -32,5 +32,5 @@ var drawReviews = function(reviews) {
   reviewsFilter.classList.remove(CLASS_INVISIBLE);
 };
 
-load(REVIEWS_LOAD_URL ,drawReviews, '__getCallback');
+load(REVIEWS_LOAD_URL, drawReviews, '__getCallback');
 

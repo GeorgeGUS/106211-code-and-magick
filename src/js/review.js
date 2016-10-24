@@ -6,7 +6,7 @@
  * @param {Array} reviews
  * @returns {Node} reviewItem
  */
-module.exports = function (reviews) {
+module.exports = function(reviews) {
   var template = document.getElementById('review-template'),
     templateContainer = 'content' in template ? template.content : template,
     reviewItem = templateContainer.cloneNode(true),
@@ -16,10 +16,10 @@ module.exports = function (reviews) {
     ratingClasses = ['one', 'two', 'three', 'four', 'five'],
     authorImage = new Image(124, 124);
 
-  authorImage.onload = function () {
+  authorImage.onload = function() {
     reviewPicture.src = this.src;
   };
-  authorImage.onerror = function () {
+  authorImage.onerror = function() {
     reviewContainer.classList.add('review-load-failure');
   };
   authorImage.src = reviews.author.picture;

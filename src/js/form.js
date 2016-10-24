@@ -1,7 +1,5 @@
 'use strict';
-//было
-window.form = (function() {
-//стало
+
 module.exports = (function() {
   /**
    * @const
