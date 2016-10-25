@@ -1,6 +1,5 @@
 'use strict';
 
-
 var load = require('./load');
 var getReviewItems = require('./review');
 
@@ -33,4 +32,3 @@ var drawReviews = function(reviews) {
 };
 
 load(REVIEWS_LOAD_URL, drawReviews, '__getCallback');
-
