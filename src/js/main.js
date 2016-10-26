@@ -24,4 +24,4 @@ form.onClose = function() {
   game.setDeactivated(false);
 };
 
-reviews.load('api/reviews', reviews.drawReviews, '__getCallback');
+reviews.load();
