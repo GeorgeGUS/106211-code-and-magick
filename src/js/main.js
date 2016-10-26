@@ -2,7 +2,7 @@
 
 var Game = require('./game');
 var form = require('./form');
-require('./reviews');
+var reviews = require('./reviews');
 
 var game = new Game(document.querySelector('.demo'));
 game.initializeLevelAndStart();
@@ -23,3 +23,5 @@ formOpenButton.onclick = function(evt) {
 form.onClose = function() {
   game.setDeactivated(false);
 };
+
+reviews.load('api/reviews', reviews.drawReviews, '__getCallback');
