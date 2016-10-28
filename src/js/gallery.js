@@ -71,23 +71,22 @@ Gallery.prototype = {
   setActivePicture: function(pictureNum) {
     var galleryPreview = document.querySelector('.overlay-gallery-preview');
 
-    this.activePicture = pictureNum; //записываем номер активной картинки
+    //записываем номер активной картинки
+    this.activePicture = pictureNum;
 
-    this.pictures.forEach(function(picture, i) {
-      if (i === pictureNum) {
-        var image = new Image();
-        image.src = picture.childNodes[0].src;
+    //создаём новое изображение
+    var image = new Image();
+    image.src = this.pictures[pictureNum].childNodes[0].src;
 
-        //проверяем, есть ли картинка в галерее
-        if (galleryPreview.lastElementChild.nodeName === 'IMG') {
-          galleryPreview.replaceChild(image, galleryPreview.lastElementChild); //если есть, заменяем новой
-        } else {
-          galleryPreview.appendChild(image); //если нет, добавляем
-        }
-      }
-    });
+    //проверяем, есть ли картинка в галерее
+    if (galleryPreview.lastElementChild.nodeName === 'IMG') {
+      galleryPreview.replaceChild(image, galleryPreview.lastElementChild); //если есть, заменяем новой
+    } else {
+      galleryPreview.appendChild(image); //если нет, добавляем
+    }
 
-    this.currentPicture.innerText = this.activePicture + 1; //выводим номер текущей картинки
+    //выводим номер текущей картинки
+    this.currentPicture.innerText = this.activePicture + 1;
   }
 };
 
