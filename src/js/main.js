@@ -11,7 +11,7 @@ game.setGameStatus(Game.Verdict.INTRO);
 
 var pictures = document.querySelectorAll('.photogallery-image');
 
-var gallery = new Gallery();
+var gallery = new Gallery(pictures);
 
 pictures.forEach(function(picture, pictureNum) {
   picture.onclick = function() {

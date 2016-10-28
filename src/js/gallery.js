@@ -1,9 +1,17 @@
 'use strict';
-
+/**
+ * @const
+ * @type {string}
+ */
 var CLASS_INVISIBLE = 'invisible';
 
-var Gallery = function() {
-  this.pictures = document.querySelectorAll('.photogallery-image img');
+/**
+ * Конструктор объекта Gallery. Создает объект галереи и выводит экран галереи.
+ * @param {NodeList} picturesList
+ * @constructor
+ */
+var Gallery = function(picturesList) {
+  this.pictures = picturesList;
   this.activePicture = 0;
   this.galleryContainer = document.querySelector('.overlay-gallery');
   this.controlLeft = document.querySelector('.overlay-gallery-control-left');
@@ -12,10 +20,15 @@ var Gallery = function() {
   this.totalPuctures = document.querySelector('.preview-number-total');
   this.galleryClose = document.querySelector('.overlay-gallery-close');
 
-
+  this.totalPuctures.innerText = this.pictures.length;
 };
 
 Gallery.prototype = {
+  /**
+   * Выводит на экран блок галереи, добавляет обработчики событий
+   * и устанавливает выбранную картинку текущей
+   * @param {number} pictureNum
+   */
   show: function(pictureNum) {
     var self = this;
 
@@ -40,14 +53,21 @@ Gallery.prototype = {
     this.setActivePicture(pictureNum);
   },
 
+  /**
+   * Скрывает блок галереи и удаляет обработчики событий
+   */
   hide: function() {
     this.galleryContainer.classList.add(CLASS_INVISIBLE);
-    //удаляем обработчики событий
     this.galleryClose.onclick = null;
     this.controlLeft.onclick = null;
     this.controlRight.onclick = null;
   },
 
+  /**
+   * Определяет текущую картинку и её номер
+   * и выводит их на экран в соответствующие DOM-элементы
+   * @param {number} pictureNum
+   */
   setActivePicture: function(pictureNum) {
     var galleryPreview = document.querySelector('.overlay-gallery-preview');
 
@@ -56,7 +76,8 @@ Gallery.prototype = {
     this.pictures.forEach(function(picture, i) {
       if (i === pictureNum) {
         var image = new Image();
-        image.src = picture.src;
+        image.src = picture.childNodes[0].src;
+
         //проверяем, есть ли картинка в галерее
         if (galleryPreview.lastElementChild.nodeName === 'IMG') {
           galleryPreview.replaceChild(image, galleryPreview.lastElementChild); //если есть, заменяем новой
@@ -64,11 +85,9 @@ Gallery.prototype = {
           galleryPreview.appendChild(image); //если нет, добавляем
         }
       }
-
     });
 
     this.currentPicture.innerText = this.activePicture + 1; //выводим номер текущей картинки
-    this.totalPuctures.innerText = this.pictures.length;
   }
 };
 
