@@ -76,7 +76,7 @@ Gallery.prototype = {
 
     //создаём новое изображение
     var image = new Image();
-    image.src = this.pictures[pictureNum].childNodes[0].src;
+    image.src = this.pictures[pictureNum];
 
     //проверяем, есть ли картинка в галерее
     if (galleryPreview.lastElementChild.nodeName === 'IMG') {

@@ -11,7 +11,12 @@ game.setGameStatus(Game.Verdict.INTRO);
 
 var pictures = document.querySelectorAll('.photogallery-image');
 
-var gallery = new Gallery(pictures);
+var picturesList = [];
+for (var i = 0; i < pictures.length; i++) {
+  picturesList[i] = pictures[i].childNodes[0].src;
+}
+
+var gallery = new Gallery(picturesList);
 
 pictures.forEach(function(picture, pictureNum) {
   picture.onclick = function() {
