@@ -20,7 +20,7 @@ var drawReviews = function(reviewsList) {
 
   reviewsFilter.classList.add(CLASS_INVISIBLE);
   reviewsList.forEach(function(data) {
-    reviewsContainer.appendChild(new Review(getReviewItems, data));
+    reviewsContainer.appendChild(new Review(getReviewItems(data), data).element);
   });
   reviewsFilter.classList.remove(CLASS_INVISIBLE);
 };
