@@ -2,6 +2,7 @@
 
 var load = require('./load');
 var getReviewItems = require('./review');
+var Review = require('./review-constructor');
 
 /**
  * @const
@@ -18,8 +19,8 @@ var drawReviews = function(reviewsList) {
   var reviewsContainer = document.querySelector('.reviews-list');
 
   reviewsFilter.classList.add(CLASS_INVISIBLE);
-  reviewsList.forEach(function(review) {
-    reviewsContainer.appendChild(getReviewItems(review));
+  reviewsList.forEach(function(data) {
+    reviewsContainer.appendChild(new Review(getReviewItems(data), data).element);
   });
   reviewsFilter.classList.remove(CLASS_INVISIBLE);
 };

@@ -18,7 +18,7 @@ for (var i = 0; i < pictures.length; i++) {
 
 var gallery = new Gallery(picturesList);
 
-pictures.forEach(function(picture, pictureNum) {
+Array.prototype.forEach.call(pictures, function(picture, pictureNum) {
   picture.onclick = function() {
     gallery.show(pictureNum);
   };
