@@ -1,19 +1,34 @@
 'use strict';
 
 /**
+ * Проеобразование объекта в строку GET-параметров
+ * @param {Object} params
+ */
+var getSearchString = function(params) {
+  return Object.keys(params).map(function(param) {
+    return [param, params[param]].join('=');
+  }).join('&');
+};
+
+/**
  * Загрузка списка отзывов с сервера
  * @param {String} url
+ * @param {Object} params
  * @param {Function} callback
- * @param {String} callbackName
  */
-module.exports = function(url, callback, callbackName) {
-  var script = document.createElement('script');
+module.exports = function(url, params, callback) {
+  var xhr = new XMLHttpRequest();
+  var loadedData = [];
 
-  if (typeof callbackName === 'undefined') {
-    callbackName = '__getCallback';
-  }
-  window[callbackName] = callback;
-  script.src = url + '?callback=' + callbackName;
-  document.body.appendChild(script);
+  xhr.open('GET', url + '?' + getSearchString(params));
+
+  xhr.addEventListener('load', function(evt) {
+    try {
+      loadedData = JSON.parse(evt.target.response);
+      callback(loadedData);
+    } catch(err) {}
+  });
+
+  xhr.send();
 };
 
