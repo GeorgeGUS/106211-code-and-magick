@@ -26,9 +26,10 @@ module.exports = function(url, params, callback) {
     try {
       loadedData = JSON.parse(evt.target.response);
       callback(loadedData);
-    } catch(err) {}
+    } catch(err) {
+      console.log(err);
+    }
   });
 
   xhr.send();
 };
-

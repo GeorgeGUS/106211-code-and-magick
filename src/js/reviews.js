@@ -34,12 +34,12 @@ var reviewBlockNumber = 0;
 /**
  * Главная функция загрузки блоков отзывов
  * @param {string} filterID
- * @param {number} reviewBlockNumber
+ * @param {number} blockNumber
  */
-var loadReviews = function(filterID, reviewBlockNumber) {
+var loadReviews = function(filterID, blockNumber) {
   load('api/reviews', {
-    from: reviewBlockNumber,
-    to: reviewBlockNumber + REVIEWS_BLOCK_SIZE,
+    from: blockNumber,
+    to: blockNumber + REVIEWS_BLOCK_SIZE,
     filter: filterID
   }, drawReviews);
 };
