@@ -787,10 +787,23 @@ Game.prototype = {
     }
   },
 
+  /**
+   * Перемещение облаков на фоне игры при скролле страницы
+   */
+  _BGParallaxOnScroll: function() {
+    var clouds = document.querySelector('.header-clouds');
+    var cloudsPos = clouds.getBoundingClientRect().bottom;
+    if (cloudsPos > 0) {
+      var translate = clouds.clientHeight - cloudsPos;
+      clouds.style.backgroundPosition = 50 - translate / 10 + '%';
+    }
+  },
+
   /** @private */
   _initializeGameListeners: function() {
     window.addEventListener('keydown', this._onKeyDown);
     window.addEventListener('keyup', this._onKeyUp);
+    window.addEventListener('scroll', this._BGParallaxOnScroll);
   },
 
   /** @private */
