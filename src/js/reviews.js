@@ -57,7 +57,7 @@ var drawReviews = function(reviewsList) {
   });
   reviewsFilter.classList.remove(CLASS_INVISIBLE);
 
-  if (reviewsList < REVIEWS_BLOCK_SIZE) {
+  if (reviewsList.length < REVIEWS_BLOCK_SIZE) {
     moreReviewsBtn.classList.add(CLASS_INVISIBLE);
   } else {
     moreReviewsBtn.classList.remove(CLASS_INVISIBLE);
