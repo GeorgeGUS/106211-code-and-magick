@@ -27,9 +27,11 @@ var DEFAULT_FILTER = 'reviews-all';
  */
 var REVIEWS_BLOCK_SIZE = 3;
 
-/** Начальное значение номера блока отзывов */
+/** Начальное положение блока отзывов */
 var reviewBlockNumber = 0;
 
+/** Начальное значение фильтра */
+var currentFilter = DEFAULT_FILTER;
 
 /**
  * Главная функция загрузки блоков отзывов
@@ -55,7 +57,7 @@ var drawReviews = function(reviewsList) {
   });
   reviewsFilter.classList.remove(CLASS_INVISIBLE);
 
-  if (reviewBlockNumber + REVIEWS_BLOCK_SIZE > reviewsContainer.childElementCount) {
+  if (reviewsList < REVIEWS_BLOCK_SIZE) {
     moreReviewsBtn.classList.add(CLASS_INVISIBLE);
   } else {
     moreReviewsBtn.classList.remove(CLASS_INVISIBLE);
@@ -64,22 +66,23 @@ var drawReviews = function(reviewsList) {
 
 /** Обработчик события смены фильтра */
 reviewsFilter.addEventListener('change', function(evt) {
-  if (evt.target.attributes[1].value === 'reviews') {
+  if (evt.target.name === 'reviews') {
     reviewsContainer.innerHTML = '';
     reviewBlockNumber = 0;
-    loadReviews(evt.target.id, reviewBlockNumber);
+    currentFilter = evt.target.id;
+    loadReviews(currentFilter, reviewBlockNumber);
   }
 });
 
 /** Обработчик события клика по кнопке подгрузки отзывов */
 moreReviewsBtn.addEventListener('click', function() {
   reviewBlockNumber = reviewBlockNumber + REVIEWS_BLOCK_SIZE;
-  loadReviews(DEFAULT_FILTER, reviewBlockNumber);
+  loadReviews(currentFilter, reviewBlockNumber);
 });
 
 var reviews = {
   load: function() {
-    loadReviews(DEFAULT_FILTER, reviewBlockNumber);
+    loadReviews(currentFilter, reviewBlockNumber);
   }
 };
 
