@@ -795,25 +795,41 @@ Game.prototype = {
     var self = this;
     var clouds = document.querySelector('.header-clouds');
     var demo = document.querySelector('.demo');
-    var throttle;
 
-    window.addEventListener('scroll', function() {
-      var cloudsPos = clouds.getBoundingClientRect().bottom;
-      var demoPos = demo.getBoundingClientRect().bottom;
-      var translate = clouds.clientHeight - cloudsPos;
+    /** Общая функция для вызова её в обработчике события скролла */
+    var addScrollListener = function() {
+      var isThrottled = true;
+      var parallax = true;
+      var cloudsPos = 0;
 
-      clearTimeout(throttle);
-      throttle = setTimeout(function() {
-        if (cloudsPos > 0) {
-          translate = 0;
+      /** Проверка видимости блоков и установка интервала троттлинга */
+      var setThrottling = function() {
+        cloudsPos = clouds.getBoundingClientRect().bottom;
+        if (isThrottled) {
+          var demoPos = demo.getBoundingClientRect().bottom;
+          parallax = cloudsPos > 0;
+          if (demoPos <= 0) {
+            self.setGameStatus(Verdict.PAUSE);
+          }
+          isThrottled = false;
         }
-        if (demoPos <= 0) {
-          self.setGameStatus(Verdict.PAUSE);
-        }
-      }, 100);
+        setTimeout(function() {
+          isThrottled = true;
+        }, 100);
+      };
 
-      clouds.style.backgroundPosition = 50 - translate / 5 + '%';
-    });
+      /** Задание смещения блока облаков */
+      var setParallax = function() {
+        var translate = clouds.clientHeight - cloudsPos;
+        if (parallax) {
+          clouds.style.backgroundPosition = 50 - translate / 5 + '%';
+        }
+      };
+      setThrottling();
+      setParallax();
+    };
+
+    window.addEventListener('scroll', addScrollListener);
   },
 
   /** @private */
