@@ -787,10 +787,56 @@ Game.prototype = {
     }
   },
 
+  /**
+   * Создание эффекта параллакса облаков
+   * и приостановка игры при скролле страницы
+   */
+  _setParallaxAndGamePause: function() {
+    var self = this;
+    var clouds = document.querySelector('.header-clouds');
+    var demo = document.querySelector('.demo');
+
+    /** Общая функция для вызова её в обработчике события скролла */
+    var addScrollListener = function() {
+      var isThrottled = true;
+      var parallax = true;
+      var cloudsPos = 0;
+
+      /** Проверка видимости блоков и установка интервала троттлинга */
+      var setThrottling = function() {
+        cloudsPos = clouds.getBoundingClientRect().bottom;
+        if (isThrottled) {
+          var demoPos = demo.getBoundingClientRect().bottom;
+          parallax = cloudsPos > 0;
+          if (demoPos <= 0) {
+            self.setGameStatus(Verdict.PAUSE);
+          }
+          isThrottled = false;
+        }
+        setTimeout(function() {
+          isThrottled = true;
+        }, 100);
+      };
+
+      /** Задание смещения блока облаков */
+      var setParallax = function() {
+        var translate = clouds.clientHeight - cloudsPos;
+        if (parallax) {
+          clouds.style.backgroundPosition = 50 - translate / 5 + '%';
+        }
+      };
+      setThrottling();
+      setParallax();
+    };
+
+    window.addEventListener('scroll', addScrollListener);
+  },
+
   /** @private */
   _initializeGameListeners: function() {
     window.addEventListener('keydown', this._onKeyDown);
     window.addEventListener('keyup', this._onKeyUp);
+    this._setParallaxAndGamePause();
   },
 
   /** @private */
