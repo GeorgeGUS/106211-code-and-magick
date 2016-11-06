@@ -788,22 +788,39 @@ Game.prototype = {
   },
 
   /**
-   * Перемещение облаков на фоне игры при скролле страницы
+   * Создание эффекта параллакса облаков
+   * и приостановка игры при скролле страницы
    */
-  _BGParallaxOnScroll: function() {
+  _setParallaxAndGamePause: function() {
+    var self = this;
     var clouds = document.querySelector('.header-clouds');
-    var cloudsPos = clouds.getBoundingClientRect().bottom;
-    if (cloudsPos > 0) {
+    var demo = document.querySelector('.demo');
+    var throttle;
+
+    window.addEventListener('scroll', function() {
+      var cloudsPos = clouds.getBoundingClientRect().bottom;
+      var demoPos = demo.getBoundingClientRect().bottom;
       var translate = clouds.clientHeight - cloudsPos;
-      clouds.style.backgroundPosition = 50 - translate / 10 + '%';
-    }
+
+      clearTimeout(throttle);
+      throttle = setTimeout(function() {
+        if (cloudsPos > 0) {
+          translate = 0;
+        }
+        if (demoPos <= 0) {
+          self.setGameStatus(Verdict.PAUSE);
+        }
+      }, 100);
+
+      clouds.style.backgroundPosition = 50 - translate / 5 + '%';
+    });
   },
 
   /** @private */
   _initializeGameListeners: function() {
     window.addEventListener('keydown', this._onKeyDown);
     window.addEventListener('keyup', this._onKeyUp);
-    window.addEventListener('scroll', this._BGParallaxOnScroll);
+    this._setParallaxAndGamePause();
   },
 
   /** @private */
