@@ -18,5 +18,5 @@ module.exports = function(func, delay) {
       isThrottled = true;
     }, delay);
   }
-  wrapper();
+  return wrapper;
 };

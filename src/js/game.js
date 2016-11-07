@@ -804,16 +804,14 @@ Game.prototype = {
       var cloudsPos = 0;
 
       /** Оптимизированная проверка видимости блоков */
-      var checkVisibility = function() {
-        cloudsPos = clouds.getBoundingClientRect().bottom;
-        throttle(function() {
+      var checkVisibility = throttle(function() {
+          cloudsPos = clouds.getBoundingClientRect().bottom;
           var demoPos = demo.getBoundingClientRect().bottom;
           parallax = cloudsPos > 0;
           if (demoPos <= 0) {
             self.setGameStatus(Verdict.PAUSE);
           }
         }, 100);
-      };
 
       /** Задание смещения блока облаков */
       var setParallax = function() {
@@ -825,7 +823,6 @@ Game.prototype = {
       checkVisibility();
       setParallax();
     };
-
     window.addEventListener('scroll', addScrollListener);
   },
 
