@@ -839,7 +839,7 @@ Game.prototype = {
       var setParallax = function() {
         var translate = clouds.clientHeight - cloudsPos;
         if (parallax) {
-          clouds.style.backgroundPosition = 50 - translate / 5 + '%';
+          clouds.style.backgroundPosition = 50 - translate / 10 + '%';
         }
       };
       checkVisibility();
