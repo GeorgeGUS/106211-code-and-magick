@@ -1,5 +1,7 @@
 'use strict';
 
+var throttle = require('./util');
+
 /**
  * @const
  * @type {number}
@@ -787,28 +789,6 @@ Game.prototype = {
     }
   },
 
-
-  /**
-   * Универсальная функция для оптимизации функций с заданной задержкой
-   * @param (Function) func
-   * @param (number) delay
-   */
-  throttle: function(func, delay) {
-    var isThrottled = true;
-
-    /** Оболочка для оптимизируемой функции */
-    function wrapper() {
-      if (isThrottled) {
-        func();
-        isThrottled = false;
-      }
-      setTimeout(function() {
-        isThrottled = true;
-      }, delay);
-    }
-    wrapper();
-  },
-
   /**
    * Создание эффекта параллакса облаков
    * и приостановка игры при скролле страницы
@@ -826,7 +806,7 @@ Game.prototype = {
       /** Оптимизированная проверка видимости блоков */
       var checkVisibility = function() {
         cloudsPos = clouds.getBoundingClientRect().bottom;
-        self.throttle(function() {
+        throttle(function() {
           var demoPos = demo.getBoundingClientRect().bottom;
           parallax = cloudsPos > 0;
           if (demoPos <= 0) {
