@@ -795,17 +795,18 @@ Game.prototype = {
    */
   throttle: function(func, delay) {
     var isThrottled = true;
+
+    /** Оболочка для оптимизируемой функции */
     function wrapper() {
       if (isThrottled) {
         func();
         isThrottled = false;
       }
-
       setTimeout(function() {
         isThrottled = true;
       }, delay);
     }
-    return wrapper;
+    wrapper();
   },
 
   /**
@@ -819,23 +820,18 @@ Game.prototype = {
 
     /** Общая функция для вызова её в обработчике события скролла */
     var addScrollListener = function() {
-      var isThrottled = true;
       var parallax = true;
       var cloudsPos = 0;
 
-      /** Проверка видимости блоков и установка интервала троттлинга */
-      var setThrottling = function() {
+      /** Оптимизированная проверка видимости блоков */
+      var checkVisibility = function() {
         cloudsPos = clouds.getBoundingClientRect().bottom;
-        if (isThrottled) {
+        self.throttle(function() {
           var demoPos = demo.getBoundingClientRect().bottom;
           parallax = cloudsPos > 0;
           if (demoPos <= 0) {
             self.setGameStatus(Verdict.PAUSE);
           }
-          isThrottled = false;
-        }
-        setTimeout(function() {
-          isThrottled = true;
         }, 100);
       };
 
@@ -846,7 +842,7 @@ Game.prototype = {
           clouds.style.backgroundPosition = 50 - translate / 5 + '%';
         }
       };
-      setThrottling();
+      checkVisibility();
       setParallax();
     };
 
