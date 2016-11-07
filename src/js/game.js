@@ -1,5 +1,7 @@
 'use strict';
 
+var throttle = require('./util');
+
 /**
  * @const
  * @type {number}
@@ -795,41 +797,32 @@ Game.prototype = {
     var self = this;
     var clouds = document.querySelector('.header-clouds');
     var demo = document.querySelector('.demo');
+    var parallax = true;
+    var cloudsPos = 0;
 
-    /** Общая функция для вызова её в обработчике события скролла */
-    var addScrollListener = function() {
-      var isThrottled = true;
-      var parallax = true;
-      var cloudsPos = 0;
 
-      /** Проверка видимости блоков и установка интервала троттлинга */
-      var setThrottling = function() {
-        cloudsPos = clouds.getBoundingClientRect().bottom;
-        if (isThrottled) {
-          var demoPos = demo.getBoundingClientRect().bottom;
-          parallax = cloudsPos > 0;
-          if (demoPos <= 0) {
-            self.setGameStatus(Verdict.PAUSE);
-          }
-          isThrottled = false;
-        }
-        setTimeout(function() {
-          isThrottled = true;
-        }, 100);
-      };
+    /** Оптимизированная проверка видимости блоков */
+    var checkVisibility = throttle(function() {
+      var demoPos = demo.getBoundingClientRect().bottom;
+      parallax = cloudsPos > 0;
+      if (demoPos <= 0) {
+        self.setGameStatus(Verdict.PAUSE);
+      }
+    }, 100);
 
-      /** Задание смещения блока облаков */
-      var setParallax = function() {
-        var translate = clouds.clientHeight - cloudsPos;
-        if (parallax) {
-          clouds.style.backgroundPosition = 50 - translate / 5 + '%';
-        }
-      };
-      setThrottling();
-      setParallax();
+    /** Задание смещения блока облаков */
+    var setParallax = function() {
+      cloudsPos = clouds.getBoundingClientRect().bottom;
+      var translate = clouds.clientHeight - cloudsPos;
+      if (parallax) {
+        clouds.style.backgroundPosition = 50 - translate / 10 + '%';
+      }
     };
 
-    window.addEventListener('scroll', addScrollListener);
+    window.addEventListener('scroll', function() {
+      checkVisibility();
+      setParallax();
+    });
   },
 
   /** @private */
