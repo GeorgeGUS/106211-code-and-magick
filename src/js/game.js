@@ -805,13 +805,13 @@ Game.prototype = {
 
       /** Оптимизированная проверка видимости блоков */
       var checkVisibility = throttle(function() {
-          cloudsPos = clouds.getBoundingClientRect().bottom;
-          var demoPos = demo.getBoundingClientRect().bottom;
-          parallax = cloudsPos > 0;
-          if (demoPos <= 0) {
-            self.setGameStatus(Verdict.PAUSE);
-          }
-        }, 100);
+        cloudsPos = clouds.getBoundingClientRect().bottom;
+        var demoPos = demo.getBoundingClientRect().bottom;
+        parallax = cloudsPos > 0;
+        if (demoPos <= 0) {
+          self.setGameStatus(Verdict.PAUSE);
+        }
+      }, 100);
 
       /** Задание смещения блока облаков */
       var setParallax = function() {
