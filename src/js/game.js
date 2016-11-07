@@ -787,6 +787,27 @@ Game.prototype = {
     }
   },
 
+
+  /**
+   * Универсальная функция для оптимизации функций с заданной задержкой
+   * @param (Function) func
+   * @param (number) delay
+   */
+  throttle: function(func, delay) {
+    var isThrottled = true;
+    function wrapper() {
+      if (isThrottled) {
+        func();
+        isThrottled = false;
+      }
+
+      setTimeout(function() {
+        isThrottled = true;
+      }, delay);
+    }
+    return wrapper;
+  },
+
   /**
    * Создание эффекта параллакса облаков
    * и приостановка игры при скролле страницы
