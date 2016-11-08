@@ -8,6 +8,14 @@ var moreReviewsBtn = document.querySelector('.reviews-controls-more');
 var reviewsFilter = document.querySelector('.reviews-filter');
 var reviewsContainer = document.querySelector('.reviews-list');
 
+var reviewBlockNumber = 0;
+
+/**
+ * @const
+ * @type {number}
+ */
+var REVIEWS_BLOCK_SIZE = 3;
+
 /**
  * @const
  * @type {string}
@@ -22,27 +30,44 @@ var DEFAULT_FILTER = 'reviews-all';
 
 /**
  * @const
- * @type {number}
+ * @type {string}
  */
-var REVIEWS_BLOCK_SIZE = 3;
+var FILTER_KEY = 'currentFilter';
 
-var reviewBlockNumber = 0;
+/**
+ * Поиск ярлыка последнего выбранного фильтра отзывов
+ * @param {string} key
+ * @param {string} filterID
+ * @return {string} filterID
+ */
+var getLastFilterLabel = function(key, filterID) {
+  var currentFilterLabel = document.getElementById(filterID);
 
-if (localStorage.getItem('currentFilter') === null) {
-  localStorage.setItem('currentFilter', DEFAULT_FILTER);
-}
+  if (currentFilterLabel !== null) {
+    currentFilterLabel.checked = true;
+  } else {
+    filterID = DEFAULT_FILTER;
+    localStorage.setItem(key, filterID);
+    document.getElementById(filterID).checked = true;
+  }
 
-var currentFilter = localStorage.getItem('currentFilter');
+  return filterID;
+};
 
-var currentFilterLabel = document.getElementById(currentFilter);
+/**
+ * Поиск последнего выбранного фильтра отзывов
+ * @param {string} key
+ * @return {string} ID фильтра
+ */
+var getLastFilter = function(key) {
+  if (localStorage.getItem(key) === null) {
+    localStorage.setItem(key, DEFAULT_FILTER);
+  }
 
-if (currentFilterLabel !== null) {
-  currentFilterLabel.checked = true;
-} else {
-  currentFilter = DEFAULT_FILTER;
-  localStorage.setItem('currentFilter', currentFilter);
-  document.getElementById(currentFilter).checked = true;
-}
+  return getLastFilterLabel(key, localStorage.getItem(key));
+};
+
+var currentFilter = getLastFilter(FILTER_KEY);
 
 
 /**
@@ -82,7 +107,7 @@ reviewsFilter.addEventListener('change', function(evt) {
     reviewsContainer.innerHTML = '';
     reviewBlockNumber = 0;
     currentFilter = evt.target.id;
-    localStorage.setItem('currentFilter', evt.target.id);
+    localStorage.setItem(FILTER_KEY, evt.target.id);
     loadReviews(currentFilter, reviewBlockNumber);
   }
 });
