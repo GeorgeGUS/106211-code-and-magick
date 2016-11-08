@@ -6,7 +6,6 @@ var Review = require('./review-constructor');
 
 var moreReviewsBtn = document.querySelector('.reviews-controls-more');
 var reviewsFilter = document.querySelector('.reviews-filter');
-var filterItems = reviewsFilter.getElementsByTagName('input');
 var reviewsContainer = document.querySelector('.reviews-list');
 
 /**
@@ -27,23 +26,24 @@ var DEFAULT_FILTER = 'reviews-all';
  */
 var REVIEWS_BLOCK_SIZE = 3;
 
-/** Начальное положение блока отзывов */
 var reviewBlockNumber = 0;
 
-/** Начальное значение фильтра */
-if (localStorage.length === 0) {
+if (localStorage.getItem('currentFilter') === null) {
   localStorage.setItem('currentFilter', DEFAULT_FILTER);
 }
 
-/** Текущее значение фильтра из памяти */
 var currentFilter = localStorage.getItem('currentFilter');
 
-/** Установка последнего сохранённого ярлыка фильтра */
-for (var i = 0; i < filterItems.length; i++) {
-  if (filterItems[i].id === currentFilter) {
-    filterItems[i].checked = true;
-  }
+var currentFilterLabel = document.getElementById(currentFilter);
+
+if (currentFilterLabel !== null) {
+  currentFilterLabel.checked = true;
+} else {
+  currentFilter = DEFAULT_FILTER;
+  localStorage.setItem('currentFilter', currentFilter);
+  document.getElementById(currentFilter).checked = true;
 }
+
 
 /**
  * Главная функция загрузки блоков отзывов
@@ -81,8 +81,8 @@ reviewsFilter.addEventListener('change', function(evt) {
   if (evt.target.name === 'reviews') {
     reviewsContainer.innerHTML = '';
     reviewBlockNumber = 0;
+    currentFilter = evt.target.id;
     localStorage.setItem('currentFilter', evt.target.id);
-    currentFilter = localStorage.getItem('currentFilter');
     loadReviews(currentFilter, reviewBlockNumber);
   }
 });
