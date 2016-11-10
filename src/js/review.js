@@ -6,6 +6,8 @@
  */
 var CLASS_ACTIVE = 'review-quiz-answer-active';
 
+var template = document.getElementById('review-template');
+
 /**
  * Конструктор блока отзыва
  * @param {Array} data
@@ -28,8 +30,7 @@ Review.prototype = {
    * @returns {Node} reviewItem
    */
   getReviewItem: function() {
-    var template = document.getElementById('review-template'),
-      templateContainer = 'content' in template ? template.content : template,
+    var templateContainer = 'content' in template ? template.content : template,
       reviewItem = templateContainer.cloneNode(true),
       reviewContainer = reviewItem.querySelector('.review'),
       reviewPicture = reviewItem.querySelector('.review-author'),
