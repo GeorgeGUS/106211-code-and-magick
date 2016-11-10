@@ -11,8 +11,6 @@ var CLASS_INVISIBLE = 'invisible';
  * @constructor
  */
 var Gallery = function(picturesList) {
-  this.pictures = picturesList;
-  this.activePicture = 0;
   this.galleryContainer = document.querySelector('.overlay-gallery');
   this.controlLeft = document.querySelector('.overlay-gallery-control-left');
   this.controlRight = document.querySelector('.overlay-gallery-control-right');
@@ -20,72 +18,71 @@ var Gallery = function(picturesList) {
   this.totalPuctures = document.querySelector('.preview-number-total');
   this.galleryClose = document.querySelector('.overlay-gallery-close');
 
+  this.pictures = picturesList;
+  this.activePicture = 0;
   this.totalPuctures.innerText = this.pictures.length;
+
+  this.hide = this.hide.bind(this);
+  this.onLeftClick = this.onLeftClick.bind(this);
+  this.onRightClick = this.onRightClick.bind(this);
 };
 
 Gallery.prototype = {
   /**
-   * Выводит на экран блок галереи, добавляет обработчики событий
-   * и устанавливает выбранную картинку текущей
+   * Вывод на экран блока галереи, добавление обработчиков событий
+   * и устанавка текущей выбранной картинки
    * @param {number} pictureNum
    */
   show: function(pictureNum) {
-    var self = this;
-
+    this.activePicture = pictureNum;
     this.galleryContainer.classList.remove(CLASS_INVISIBLE);
 
-    this.galleryClose.onclick = function() {
-      self.hide();
-    };
-    this.controlLeft.onclick = function() {
-      if (pictureNum > 0) {
-        pictureNum--;
-        self.setActivePicture(pictureNum);
-      }
-    };
-    this.controlRight.onclick = function() {
-      if (pictureNum < self.pictures.length - 1) {
-        pictureNum++;
-        self.setActivePicture(pictureNum);
-      }
-    };
+    this.galleryClose.addEventListener('click', this.hide);
+    this.controlLeft.addEventListener('click', this.onLeftClick);
+    this.controlRight.addEventListener('click', this.onRightClick);
 
-    this.setActivePicture(pictureNum);
+    this.setActivePicture();
   },
 
   /**
-   * Скрывает блок галереи и удаляет обработчики событий
+   * Скрытие блока галереи и удаление обработчиков событий
    */
   hide: function() {
     this.galleryContainer.classList.add(CLASS_INVISIBLE);
-    this.galleryClose.onclick = null;
-    this.controlLeft.onclick = null;
-    this.controlRight.onclick = null;
+    this.galleryClose.removeEventListener('click', this.hide);
+    this.controlLeft.removeEventListener('click', this.onLeftClick);
+    this.controlRight.removeEventListener('click', this.onRightClick);
+  },
+
+  onLeftClick: function() {
+    if (this.activePicture > 0) {
+      this.activePicture--;
+      this.setActivePicture();
+    }
+  },
+
+  onRightClick: function() {
+    if (this.activePicture < this.pictures.length - 1) {
+      this.activePicture++;
+      this.setActivePicture();
+    }
   },
 
   /**
-   * Определяет текущую картинку и её номер
-   * и выводит их на экран в соответствующие DOM-элементы
-   * @param {number} pictureNum
+   * Вывод текущей картинки и её номера на экран
    */
-  setActivePicture: function(pictureNum) {
+  setActivePicture: function() {
     var galleryPreview = document.querySelector('.overlay-gallery-preview');
 
-    //записываем номер активной картинки
-    this.activePicture = pictureNum;
-
-    //создаём новое изображение
     var image = new Image();
-    image.src = this.pictures[pictureNum];
+    image.src = this.pictures[this.activePicture];
 
-    //проверяем, есть ли картинка в галерее
     if (galleryPreview.lastElementChild.nodeName === 'IMG') {
-      galleryPreview.replaceChild(image, galleryPreview.lastElementChild); //если есть, заменяем новой
+      galleryPreview.replaceChild(image, galleryPreview.lastElementChild);
     } else {
-      galleryPreview.appendChild(image); //если нет, добавляем
+      galleryPreview.appendChild(image);
     }
 
-    //выводим номер текущей картинки
     this.currentPicture.innerText = this.activePicture + 1;
   }
 };

@@ -1,8 +1,7 @@
 'use strict';
 
 var load = require('./load');
-var getReviewItems = require('./review');
-var Review = require('./review-constructor');
+var Review = require('./review');
 
 var moreReviewsBtn = document.querySelector('.reviews-controls-more');
 var reviewsFilter = document.querySelector('.reviews-filter');
@@ -90,7 +89,7 @@ var loadReviews = function(filterID, blockNumber) {
 var drawReviews = function(reviewsList) {
   reviewsFilter.classList.add(CLASS_INVISIBLE);
   reviewsList.forEach(function(data) {
-    reviewsContainer.appendChild(new Review(getReviewItems(data), data).element);
+    reviewsContainer.appendChild(new Review(data).element);
   });
   reviewsFilter.classList.remove(CLASS_INVISIBLE);
 
