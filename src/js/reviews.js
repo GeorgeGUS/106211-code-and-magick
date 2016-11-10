@@ -1,8 +1,6 @@
 'use strict';
 
 var load = require('./load');
-// var getReviewItems = require('./review');
-// var Review = require('./review-constructor');
 var Review = require('./review');
 
 var moreReviewsBtn = document.querySelector('.reviews-controls-more');
