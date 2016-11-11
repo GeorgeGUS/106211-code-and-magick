@@ -2,16 +2,16 @@
 
 module.exports = {
   /**
-   * Универсальная функция копирования классов с помощью создания
-   * пустого прототипа объекта
-   * @param (Object) ClassOrigin
-   * @return (Object) ClassCopy
+   * Универсальная функция продления цепочки прототипов
+   * с помощью создания пустого конструктора
+   * @param (Object} childClass
+   * @param (Object) parentCLass
    */
-  inherit: function(ClassOrigin) {
-    var ClassCopy = function() {};
-    ClassCopy.prototype = ClassOrigin.prototype;
+  inherit: function(childClass, parentCLass) {
+    var emptyConstructor = function() {};
+    emptyConstructor.prototype = parentCLass.prototype;
 
-    return new ClassCopy();
+    childClass.prototype = new emptyConstructor();
   },
 
   /**
