@@ -17,12 +17,11 @@ var CLASS_INVISIBLE = 'invisible';
  */
 var Gallery = function(container, picturesList) {
   BaseComponent.call(this, container);
-  this.controlLeft = document.querySelector('.overlay-gallery-control-left');
-  this.controlRight = document.querySelector('.overlay-gallery-control-right');
   this.currentPicture = document.querySelector('.preview-number-current');
   this.totalPuctures = document.querySelector('.preview-number-total');
   this.galleryClose = document.querySelector('.overlay-gallery-close');
-
+  this.controlLeft = document.querySelector('.overlay-gallery-control-left');
+  this.controlRight = document.querySelector('.overlay-gallery-control-right');
 
   this.pictures = picturesList;
   this.activePicture = 0;

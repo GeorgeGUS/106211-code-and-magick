@@ -34,7 +34,7 @@ Review.prototype = {
    * @returns {Node} reviewItem
    */
   getReviewItem: function(reviewItem) {
-     var reviewPicture = reviewItem.querySelector('.review-author'),
+    var reviewPicture = reviewItem.querySelector('.review-author'),
       reviewText = reviewItem.querySelector('.review-text'),
       ratingClasses = ['one', 'two', 'three', 'four', 'five'],
       authorImage = new Image(124, 124);
@@ -56,10 +56,12 @@ Review.prototype = {
    * @param {Node} evt
    */
   onAnswerClick: function(evt) {
-    Array.prototype.forEach.call(this.answers, function(answer) {
-      answer.classList.remove(CLASS_ACTIVE);
-    });
-    evt.target.classList.add(CLASS_ACTIVE);
+    if (evt.target.classList.contains('review-quiz-answer')) {
+      Array.prototype.forEach.call(this.answers, function(answer) {
+        answer.classList.remove(CLASS_ACTIVE);
+      });
+      evt.target.classList.add(CLASS_ACTIVE);
+    }
   },
 
   remove: function() {
