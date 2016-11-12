@@ -11,8 +11,8 @@ module.exports = {
     if (typeof ChildClass === 'function' && typeof ParentClass === 'function') {
       var EmptyConstructor = function() {};
       EmptyConstructor.prototype = ParentClass.prototype;
-
       ChildClass.prototype = new EmptyConstructor();
+      ChildClass.prototype.constructor = ChildClass;
     } else {
       console.error('inherit: One or both parameters is not a function');
     }

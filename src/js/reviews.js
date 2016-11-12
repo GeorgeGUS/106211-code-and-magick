@@ -8,7 +8,7 @@ var reviewsFilter = document.querySelector('.reviews-filter');
 var reviewsContainer = document.querySelector('.reviews-list');
 var template = document.getElementById('review-template');
 var templateContainer = 'content' in template ? template.content : template;
-
+var reviewBlockArray = [];
 var reviewBlockNumber = 0;
 
 /**
@@ -91,7 +91,10 @@ var loadReviews = function(filterID, blockNumber) {
 var drawReviews = function(reviewsList) {
   reviewsFilter.classList.add(CLASS_INVISIBLE);
   reviewsList.forEach(function(data) {
-    reviewsContainer.appendChild(new Review(templateContainer, data).element);
+    var revElem = templateContainer.querySelector('.review').cloneNode(true);
+    var revItem = new Review(revElem, data).element;
+    reviewBlockArray.push(revItem);
+    reviewsContainer.appendChild(revItem);
   });
   reviewsFilter.classList.remove(CLASS_INVISIBLE);
 
@@ -105,7 +108,10 @@ var drawReviews = function(reviewsList) {
 /** Обработчик события смены фильтра */
 reviewsFilter.addEventListener('change', function(evt) {
   if (evt.target.name === 'reviews') {
-    reviewsContainer.innerHTML = '';
+    reviewBlockArray.forEach(function(item) {
+      item.remove();
+    });
+    reviewBlockArray = [];
     reviewBlockNumber = 0;
     currentFilter = evt.target.id;
     localStorage.setItem(FILTER_KEY, evt.target.id);

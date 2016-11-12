@@ -33,10 +33,7 @@ var Gallery = function(container, picturesList) {
   this.onRightClick = this.onRightClick.bind(this);
 };
 
-// utils.inherit(Gallery, BaseComponent); //правильный вариант
-utils.inherit(CLASS_INVISIBLE, CLASS_INVISIBLE); // вариант с ошибкой.
-// ошибка выводится в консоль, но наследование продолжает работать.
-
+utils.inherit(Gallery, BaseComponent);
 
 Gallery.prototype = {
   /**

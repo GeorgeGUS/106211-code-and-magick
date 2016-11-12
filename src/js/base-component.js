@@ -11,8 +11,8 @@ var BaseComponent = function(element) {
 };
 
 BaseComponent.prototype = {
-  append: function() {
-    this.element.parentNode.appendChild(this.element);
+  appendTo: function(container) {
+    container.appendChild(this.element);
   },
 
   remove: function() {
