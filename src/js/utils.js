@@ -4,14 +4,19 @@ module.exports = {
   /**
    * Универсальная функция продления цепочки прототипов
    * с помощью создания пустого конструктора
-   * @param (Object} childClass
-   * @param (Object) parentCLass
+   * @param (Object} ChildClass
+   * @param (Object) ParentClass
    */
-  inherit: function(childClass, parentCLass) {
-    var emptyConstructor = function() {};
-    emptyConstructor.prototype = parentCLass.prototype;
+  inherit: function(ChildClass, ParentClass) {
+    if (typeof ChildClass === 'function' && typeof ParentClass === 'function') {
+      var EmptyConstructor = function() {};
+      EmptyConstructor.prototype = ParentClass.prototype;
 
-    childClass.prototype = new emptyConstructor();
+      ChildClass.prototype = new EmptyConstructor();
+    } else {
+      console.error('inherit: One or both parameters is not a function');
+    }
+
   },
 
   /**

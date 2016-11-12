@@ -6,6 +6,8 @@ var Review = require('./review');
 var moreReviewsBtn = document.querySelector('.reviews-controls-more');
 var reviewsFilter = document.querySelector('.reviews-filter');
 var reviewsContainer = document.querySelector('.reviews-list');
+var template = document.getElementById('review-template');
+var templateContainer = 'content' in template ? template.content : template;
 
 var reviewBlockNumber = 0;
 
@@ -89,7 +91,7 @@ var loadReviews = function(filterID, blockNumber) {
 var drawReviews = function(reviewsList) {
   reviewsFilter.classList.add(CLASS_INVISIBLE);
   reviewsList.forEach(function(data) {
-    reviewsContainer.appendChild(new Review(data).element);
+    reviewsContainer.appendChild(new Review(templateContainer, data).element);
   });
   reviewsFilter.classList.remove(CLASS_INVISIBLE);
 
