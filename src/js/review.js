@@ -1,5 +1,8 @@
 'use strict';
 
+var BaseComponent = require('./base-component');
+var utils = require('./utils');
+
 /**
  * @const
  * @type {string}
@@ -23,6 +26,8 @@ var Review = function(data) {
     this.answers[i].addEventListener('click', this.onAnswerClick);
   }
 };
+
+utils.inherit(Review, BaseComponent);
 
 Review.prototype = {
   /**

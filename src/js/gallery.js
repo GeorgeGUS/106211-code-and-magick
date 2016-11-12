@@ -1,4 +1,8 @@
 'use strict';
+
+var BaseComponent = require('./base-component');
+var utils = require('./utils');
+
 /**
  * @const
  * @type {string}
@@ -26,6 +30,8 @@ var Gallery = function(picturesList) {
   this.onLeftClick = this.onLeftClick.bind(this);
   this.onRightClick = this.onRightClick.bind(this);
 };
+
+utils.inherit(Gallery, BaseComponent);
 
 Gallery.prototype = {
   /**
