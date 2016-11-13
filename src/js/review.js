@@ -45,16 +45,15 @@ Review.prototype = {
     authorImage.onerror = function() {
       reviewItem.classList.add('review-load-failure');
     };
-    authorImage.src = this.data.author.picture;
-    reviewText.textContent = this.data.description;
-    reviewItem.querySelector('.review-rating').classList.add('review-rating-' + ratingClasses[this.data.rating - 1]);
+    authorImage.src = this.data.getAuthorPicture();
+    reviewText.textContent = this.data.getDescription();
+    reviewItem.querySelector('.review-rating').classList.add('review-rating-' +
+      ratingClasses[this.data.getRating() - 1]);
 
     return reviewItem;
   },
 
-  /**
-   * @param {Node} evt
-   */
+  /** @param {Node} evt */
   onAnswerClick: function(evt) {
     if (evt.target.classList.contains('review-quiz-answer')) {
       Array.prototype.forEach.call(this.answers, function(answer) {
