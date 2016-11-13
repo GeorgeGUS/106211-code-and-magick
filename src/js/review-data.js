@@ -11,6 +11,7 @@ var ReviewData = function(data) {
   this.created = data.created;
   this.reviewUsefulness = data.review_usefulness;
   this.rating = data.rating;
+  this.description = data.description;
 };
 
 ReviewData.prototype = {
