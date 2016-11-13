@@ -1,4 +1,8 @@
 'use strict';
+
+var BaseComponent = require('./base-component');
+var utils = require('./utils');
+
 /**
  * @const
  * @type {string}
@@ -7,16 +11,17 @@ var CLASS_INVISIBLE = 'invisible';
 
 /**
  * Конструктор объекта Gallery. Создает объект галереи и выводит экран галереи.
+ * @param {Node} container
  * @param {NodeList} picturesList
  * @constructor
  */
-var Gallery = function(picturesList) {
-  this.galleryContainer = document.querySelector('.overlay-gallery');
-  this.controlLeft = document.querySelector('.overlay-gallery-control-left');
-  this.controlRight = document.querySelector('.overlay-gallery-control-right');
+var Gallery = function(container, picturesList) {
+  BaseComponent.call(this, container);
   this.currentPicture = document.querySelector('.preview-number-current');
   this.totalPuctures = document.querySelector('.preview-number-total');
   this.galleryClose = document.querySelector('.overlay-gallery-close');
+  this.controlLeft = document.querySelector('.overlay-gallery-control-left');
+  this.controlRight = document.querySelector('.overlay-gallery-control-right');
 
   this.pictures = picturesList;
   this.activePicture = 0;
@@ -27,6 +32,8 @@ var Gallery = function(picturesList) {
   this.onRightClick = this.onRightClick.bind(this);
 };
 
+utils.inherit(Gallery, BaseComponent);
+
 Gallery.prototype = {
   /**
    * Вывод на экран блока галереи, добавление обработчиков событий
@@ -35,7 +42,7 @@ Gallery.prototype = {
    */
   show: function(pictureNum) {
     this.activePicture = pictureNum;
-    this.galleryContainer.classList.remove(CLASS_INVISIBLE);
+    this.element.classList.remove(CLASS_INVISIBLE);
 
     this.galleryClose.addEventListener('click', this.hide);
     this.controlLeft.addEventListener('click', this.onLeftClick);
@@ -48,7 +55,7 @@ Gallery.prototype = {
    * Скрытие блока галереи и удаление обработчиков событий
    */
   hide: function() {
-    this.galleryContainer.classList.add(CLASS_INVISIBLE);
+    this.element.classList.add(CLASS_INVISIBLE);
     this.galleryClose.removeEventListener('click', this.hide);
     this.controlLeft.removeEventListener('click', this.onLeftClick);
     this.controlRight.removeEventListener('click', this.onRightClick);

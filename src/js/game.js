@@ -1,6 +1,6 @@
 'use strict';
 
-var throttle = require('./util');
+var throttle = require('./utils').throttle;
 
 /**
  * @const

@@ -1,39 +1,40 @@
 'use strict';
 
+var BaseComponent = require('./base-component');
+var utils = require('./utils');
+
 /**
  * @const
  * @type {string}
  */
 var CLASS_ACTIVE = 'review-quiz-answer-active';
 
-var template = document.getElementById('review-template');
 
 /**
  * Конструктор блока отзыва
+ * @param {Node} element
  * @param {Array} data
  * @constructor
  */
-var Review = function(data) {
+var Review = function(element, data) {
   this.data = data;
-  this.element = this.getReviewItem();
+  BaseComponent.call(this, this.getReviewItem(element));
   this.onAnswerClick = this.onAnswerClick.bind(this);
+  this.answersList = this.element.querySelector('.review-quiz');
   this.answers = this.element.querySelectorAll('.review-quiz-answer');
 
-  for (var i = 0; i < this.answers.length; i++) {
-    this.answers[i].addEventListener('click', this.onAnswerClick);
-  }
+  this.answersList.addEventListener('click', this.onAnswerClick);
 };
+
+utils.inherit(Review, BaseComponent);
 
 Review.prototype = {
   /**
    * Отрисивка одного блока отзыва
    * @returns {Node} reviewItem
    */
-  getReviewItem: function() {
-    var templateContainer = 'content' in template ? template.content : template,
-      reviewItem = templateContainer.cloneNode(true),
-      reviewContainer = reviewItem.querySelector('.review'),
-      reviewPicture = reviewItem.querySelector('.review-author'),
+  getReviewItem: function(reviewItem) {
+    var reviewPicture = reviewItem.querySelector('.review-author'),
       reviewText = reviewItem.querySelector('.review-text'),
       ratingClasses = ['one', 'two', 'three', 'four', 'five'],
       authorImage = new Image(124, 124);
@@ -42,7 +43,7 @@ Review.prototype = {
       reviewPicture.src = this.src;
     };
     authorImage.onerror = function() {
-      reviewContainer.classList.add('review-load-failure');
+      reviewItem.classList.add('review-load-failure');
     };
     authorImage.src = this.data.author.picture;
     reviewText.textContent = this.data.description;
@@ -55,16 +56,17 @@ Review.prototype = {
    * @param {Node} evt
    */
   onAnswerClick: function(evt) {
-    for (var i = 0; i < this.answers.length; i++) {
-      this.answers[i].classList.remove(CLASS_ACTIVE);
+    if (evt.target.classList.contains('review-quiz-answer')) {
+      Array.prototype.forEach.call(this.answers, function(answer) {
+        answer.classList.remove(CLASS_ACTIVE);
+      });
+      evt.target.classList.add(CLASS_ACTIVE);
     }
-    evt.target.classList.add(CLASS_ACTIVE);
   },
 
   remove: function() {
-    for (var i = 0; i < this.answers.length; i++) {
-      this.answers[i].removeEventListener('click', this.onAnswerClick);
-    }
+    this.answersList.removeEventListener('click', this.onAnswerClick);
+    BaseComponent.prototype.remove.call(this);
   }
 };
 
