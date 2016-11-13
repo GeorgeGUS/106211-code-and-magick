@@ -93,9 +93,9 @@ var drawReviews = function(reviewsList) {
   reviewsFilter.classList.add(CLASS_INVISIBLE);
   reviewsList.forEach(function(data) {
     var revElem = templateContainer.querySelector('.review').cloneNode(true);
-    var revItem = new Review(revElem, new ReviewData(data)).element;
+    var revItem = new Review(revElem, new ReviewData(data));
     reviewBlockArray.push(revItem);
-    reviewsContainer.appendChild(revItem);
+    reviewsContainer.appendChild(revItem.element);
   });
   reviewsFilter.classList.remove(CLASS_INVISIBLE);
 

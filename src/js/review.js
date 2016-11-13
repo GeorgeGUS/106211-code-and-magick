@@ -45,10 +45,10 @@ Review.prototype = {
     authorImage.onerror = function() {
       reviewItem.classList.add('review-load-failure');
     };
-    authorImage.src = this.data.getAuthorImage();
-    reviewText.textContent = this.data.getDescriptionText();
+    authorImage.src = this.data.getAuthorPicture();
+    reviewText.textContent = this.data.getDescription();
     reviewItem.querySelector('.review-rating').classList.add('review-rating-' +
-      ratingClasses[this.data.getRatingValue() - 1]);
+      ratingClasses[this.data.getRating() - 1]);
 
     return reviewItem;
   },
