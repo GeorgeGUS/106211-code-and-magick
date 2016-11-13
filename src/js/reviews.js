@@ -2,6 +2,7 @@
 
 var load = require('./load');
 var Review = require('./review');
+var ReviewData = require('./review-data');
 
 var moreReviewsBtn = document.querySelector('.reviews-controls-more');
 var reviewsFilter = document.querySelector('.reviews-filter');
@@ -92,7 +93,7 @@ var drawReviews = function(reviewsList) {
   reviewsFilter.classList.add(CLASS_INVISIBLE);
   reviewsList.forEach(function(data) {
     var revElem = templateContainer.querySelector('.review').cloneNode(true);
-    var revItem = new Review(revElem, data).element;
+    var revItem = new Review(revElem, new ReviewData(data)).element;
     reviewBlockArray.push(revItem);
     reviewsContainer.appendChild(revItem);
   });
