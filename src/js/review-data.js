@@ -6,58 +6,62 @@
  * @constructor
  */
 var ReviewData = function(data) {
-  this.data = data;
+  this.authorName = data.author.name;
+  this.authorPicture = data.author.picture;
+  this.created = data.created;
+  this.reviewUsefulness = data.review_usefulness;
+  this.rating = data.rating;
 };
 
 ReviewData.prototype = {
   /** @return {string} */
   getAuthorName: function() {
-    return this.data.author.name;
+    return this.authorName;
   },
   /** @return {string} */
   getAuthorPicture: function() {
-    return this.data.author.picture;
+    return this.authorPicture;
   },
   /** @return {number} */
   getCreated: function() {
-    return this.data.created;
+    return this.created;
   },
   /** @return {number} */
   getUsefulness: function() {
-    return this.data.review_usefulness;
+    return this.reviewUsefulness;
   },
   /** @return {number} */
   getRating: function() {
-    return this.data.rating;
+    return this.rating;
   },
   /** @return {string} */
   getDescription: function() {
-    return this.data.description;
+    return this.description;
   },
 
   /** @param {string} name */
   setAuthorName: function(name) {
-    this.data.author.name = name;
+    this.authorName = name;
   },
   /** @param {string} picture */
   setAuthorPicture: function(picture) {
-    this.data.author.picture = picture;
+    this.authorPicture = picture;
   },
   /** @param {number} created */
   setCreated: function(created) {
-    this.data.created = created;
+    this.created = created;
   },
   /** @param {number} usefulness */
   setUsefulness: function(usefulness) {
-    this.data.review_usefulness = usefulness;
+    this.reviewUsefulness = usefulness;
   },
   /** @param {number} rating */
   setRating: function(rating) {
-    this.data.rating = rating;
+    this.rating = rating;
   },
   /** @param {string} description */
   setDescription: function(description) {
-    this.data.description = description;
+    this.description = description;
   }
 };
 
