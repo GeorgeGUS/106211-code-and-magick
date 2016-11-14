@@ -19,11 +19,11 @@ var CLASS_ACTIVE = 'review-quiz-answer-active';
 var Review = function(element, data) {
   this.data = data;
   BaseComponent.call(this, this.getReviewItem(element));
-  this.onAnswerClick = this.onAnswerClick.bind(this);
+  this.setUsefulnessOnClick = this.setUsefulnessOnClick.bind(this);
   this.answersList = this.element.querySelector('.review-quiz');
   this.answers = this.element.querySelectorAll('.review-quiz-answer');
 
-  this.answersList.addEventListener('click', this.onAnswerClick);
+  this.answersList.addEventListener('click', this.setUsefulnessOnClick);
 };
 
 utils.inherit(Review, BaseComponent);
@@ -54,7 +54,18 @@ Review.prototype = {
   },
 
   /** @param {Node} evt */
-  onAnswerClick: function(evt) {
+  setUsefulnessOnClick: function(evt) {
+    var currentMark = this.data.getUsefulness();
+    if (evt.target.classList.contains('review-quiz-answer-yes')) {
+      ++currentMark;
+    } else if (evt.target.classList.contains('review-quiz-answer-no')) {
+      --currentMark;
+    }
+    this.data.setUsefulness(currentMark, this.setUsefulnessState.bind(this, evt));
+  },
+
+  /** @param {Node} evt */
+  setUsefulnessState: function(evt) {
     if (evt.target.classList.contains('review-quiz-answer')) {
       Array.prototype.forEach.call(this.answers, function(answer) {
         answer.classList.remove(CLASS_ACTIVE);
