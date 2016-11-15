@@ -30,6 +30,8 @@ var Gallery = function(container, picturesList) {
   this.hide = this.hide.bind(this);
   this.onLeftClick = this.onLeftClick.bind(this);
   this.onRightClick = this.onRightClick.bind(this);
+
+
 };
 
 utils.inherit(Gallery, BaseComponent);
@@ -41,13 +43,22 @@ Gallery.prototype = {
    * @param {number} pictureNum
    */
   show: function(pictureNum) {
-    this.activePicture = pictureNum;
+    if (typeof pictureNum === 'number') {
+      this.activePicture = pictureNum;
+    } else if (typeof pictureNum === 'string') {
+      this.activePicture = pictureNum.match(/(\d)/)[1];
+      this.pictureSrc = pictureNum;
+    }
+
     this.element.classList.remove(CLASS_INVISIBLE);
 
     this.galleryClose.addEventListener('click', this.hide);
     this.controlLeft.addEventListener('click', this.onLeftClick);
     this.controlRight.addEventListener('click', this.onRightClick);
 
+    window.onhashchange = this._restoreFromHash();
+
+    this._restoreFromHash();
     this.setActivePicture();
   },
 
@@ -55,6 +66,7 @@ Gallery.prototype = {
    * Скрытие блока галереи и удаление обработчиков событий
    */
   hide: function() {
+    location.hash = '';
     this.element.classList.add(CLASS_INVISIBLE);
     this.galleryClose.removeEventListener('click', this.hide);
     this.controlLeft.removeEventListener('click', this.onLeftClick);
@@ -62,17 +74,23 @@ Gallery.prototype = {
   },
 
   onLeftClick: function() {
-    if (this.activePicture > 0) {
+    if (this.activePicture > 1) {
       this.activePicture--;
-      this.setActivePicture();
+      location.hash = 'photo/img/screenshots/' + this.activePicture + '.png';
+      location.reload();
     }
   },
 
   onRightClick: function() {
-    if (this.activePicture < this.pictures.length - 1) {
+    if (this.activePicture < this.pictures.length) {
       this.activePicture++;
-      this.setActivePicture();
+      location.hash = 'photo/img/screenshots/' + this.activePicture + '.png';
+      location.reload();
     }
+  },
+
+  _restoreFromHash: function() {
+    location.hash = location.hash.indexOf('photo') !== -1 ? '' : 'photo/img/screenshots/' + this.activePicture + '.png';
   },
 
   /**
@@ -82,7 +100,13 @@ Gallery.prototype = {
     var galleryPreview = document.querySelector('.overlay-gallery-preview');
 
     var image = new Image();
-    image.src = this.pictures[this.activePicture];
+    if (typeof this.activePicture === 'string') {
+      image.src = this.pictureSrc;
+      this.currentPicture.innerText = this.activePicture;
+    } else if (typeof this.activePicture === 'number') {
+      image.src = this.pictures[this.activePicture];
+      this.currentPicture.innerText = this.activePicture + 1;
+    }
 
     if (galleryPreview.lastElementChild.nodeName === 'IMG') {
       galleryPreview.replaceChild(image, galleryPreview.lastElementChild);
@@ -90,7 +114,7 @@ Gallery.prototype = {
       galleryPreview.appendChild(image);
     }
 
-    this.currentPicture.innerText = this.activePicture + 1;
+
   }
 };
 
