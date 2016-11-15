@@ -55,18 +55,18 @@ Review.prototype = {
   },
 
   /**
-   * Установка значения полезности отзыва и запись в объект
-   * @param {Node} evt
+   * Определение полезности отзыва
+   * @param {MouseEvent} evt
    */
   setUsefulnessOnClick: function(evt) {
     if (evt.target.classList.contains('review-quiz-answer')) {
       var isUseful = evt.target === this.answerYes;
-      this.data.updateUsefulness(isUseful, this.setUsefulnessState.bind(this));
+      this.data.updateUsefulness(isUseful, this.onUsefulnessUpdate.bind(this));
     }
   },
 
-  /** @param {Node} isUseful */
-  setUsefulnessState: function(isUseful) {
+  /** @param {Boolean} isUseful */
+  onUsefulnessUpdate: function(isUseful) {
     if (isUseful) {
       this.answerYes.classList.add(CLASS_ACTIVE);
       this.answerNo.classList.remove(CLASS_ACTIVE);
