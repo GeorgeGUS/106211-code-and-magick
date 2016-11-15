@@ -19,11 +19,12 @@ var CLASS_ACTIVE = 'review-quiz-answer-active';
 var Review = function(element, data) {
   this.data = data;
   BaseComponent.call(this, this.getReviewItem(element));
-  this.onAnswerClick = this.onAnswerClick.bind(this);
+  this.setUsefulnessOnClick = this.setUsefulnessOnClick.bind(this);
   this.answersList = this.element.querySelector('.review-quiz');
-  this.answers = this.element.querySelectorAll('.review-quiz-answer');
+  this.answerYes = this.element.querySelector('.review-quiz-answer-yes');
+  this.answerNo = this.element.querySelector('.review-quiz-answer-no');
 
-  this.answersList.addEventListener('click', this.onAnswerClick);
+  this.answersList.addEventListener('click', this.setUsefulnessOnClick);
 };
 
 utils.inherit(Review, BaseComponent);
@@ -53,13 +54,25 @@ Review.prototype = {
     return reviewItem;
   },
 
-  /** @param {Node} evt */
-  onAnswerClick: function(evt) {
+  /**
+   * Определение полезности отзыва
+   * @param {MouseEvent} evt
+   */
+  setUsefulnessOnClick: function(evt) {
     if (evt.target.classList.contains('review-quiz-answer')) {
-      Array.prototype.forEach.call(this.answers, function(answer) {
-        answer.classList.remove(CLASS_ACTIVE);
-      });
-      evt.target.classList.add(CLASS_ACTIVE);
+      var isUseful = evt.target === this.answerYes;
+      this.data.updateUsefulness(isUseful, this.onUsefulnessUpdate.bind(this));
+    }
+  },
+
+  /** @param {Boolean} isUseful */
+  onUsefulnessUpdate: function(isUseful) {
+    if (isUseful) {
+      this.answerYes.classList.add(CLASS_ACTIVE);
+      this.answerNo.classList.remove(CLASS_ACTIVE);
+    } else {
+      this.answerNo.classList.add(CLASS_ACTIVE);
+      this.answerYes.classList.remove(CLASS_ACTIVE);
     }
   },
 
