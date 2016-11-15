@@ -53,13 +53,15 @@ ReviewData.prototype = {
     this.created = created;
   },
   /**
-   * @param {number} usefulness
+   * @param {Node} isUseful
    * @param {Function} callback
    */
-  setUsefulness: function(usefulness, callback) {
-    this.reviewUsefulness = usefulness;
+  updateUsefulness: function(isUseful, callback) {
+    var currentMark = this.getUsefulness();
+    currentMark += isUseful ? 1 : -1;
+    this.reviewUsefulness = currentMark;
     if (typeof callback === 'function') {
-      callback();
+      callback(isUseful);
     }
   },
   /** @param {number} rating */

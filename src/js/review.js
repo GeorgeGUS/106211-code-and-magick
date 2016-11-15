@@ -21,7 +21,8 @@ var Review = function(element, data) {
   BaseComponent.call(this, this.getReviewItem(element));
   this.setUsefulnessOnClick = this.setUsefulnessOnClick.bind(this);
   this.answersList = this.element.querySelector('.review-quiz');
-  this.answers = this.element.querySelectorAll('.review-quiz-answer');
+  this.answerYes = this.element.querySelector('.review-quiz-answer-yes');
+  this.answerNo = this.element.querySelector('.review-quiz-answer-no');
 
   this.answersList.addEventListener('click', this.setUsefulnessOnClick);
 };
@@ -53,24 +54,25 @@ Review.prototype = {
     return reviewItem;
   },
 
-  /** @param {Node} evt */
+  /**
+   * Установка значения полезности отзыва и запись в объект
+   * @param {Node} evt
+   */
   setUsefulnessOnClick: function(evt) {
-    var currentMark = this.data.getUsefulness();
-    if (evt.target.classList.contains('review-quiz-answer-yes')) {
-      ++currentMark;
-    } else if (evt.target.classList.contains('review-quiz-answer-no')) {
-      --currentMark;
+    if (evt.target.classList.contains('review-quiz-answer')) {
+      var isUseful = evt.target === this.answerYes;
+      this.data.updateUsefulness(isUseful, this.setUsefulnessState.bind(this));
     }
-    this.data.setUsefulness(currentMark, this.setUsefulnessState.bind(this, evt));
   },
 
-  /** @param {Node} evt */
-  setUsefulnessState: function(evt) {
-    if (evt.target.classList.contains('review-quiz-answer')) {
-      Array.prototype.forEach.call(this.answers, function(answer) {
-        answer.classList.remove(CLASS_ACTIVE);
-      });
-      evt.target.classList.add(CLASS_ACTIVE);
+  /** @param {Node} isUseful */
+  setUsefulnessState: function(isUseful) {
+    if (isUseful) {
+      this.answerYes.classList.add(CLASS_ACTIVE);
+      this.answerNo.classList.remove(CLASS_ACTIVE);
+    } else {
+      this.answerNo.classList.add(CLASS_ACTIVE);
+      this.answerYes.classList.remove(CLASS_ACTIVE);
     }
   },
 
