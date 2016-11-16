@@ -25,16 +25,15 @@ Array.prototype.forEach.call(pictures, function(picture, pictureNum) {
   picture.onclick = function() {
     location.hash = '#photo' + picturesList[pictureNum];
     gallery.show(location.hash.match(/#photo\/(\S+)/)[1]);
+    console.log(location);
   };
 });
 
-var onHashChange = function() {
-  location.hash.indexOf('photo') === -1 ? gallery.hide() : gallery.show(location.hash.match(/#photo\/(\S+)/)[1]);
-};
 
-window.addEventListener('hashchange', onHashChange);
 
-window.onload = onHashChange;
+// window.addEventListener('hashchange', gallery.onHashChange);
+
+window.onload = gallery.onHashChange;
 
 var formOpenButton = document.querySelector('.reviews-controls-new');
 

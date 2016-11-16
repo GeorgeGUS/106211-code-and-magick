@@ -31,11 +31,22 @@ var Gallery = function(container, picturesList) {
   this.onLeftClick = this.onLeftClick.bind(this);
   this.onRightClick = this.onRightClick.bind(this);
   this._reloadHash = this._reloadHash.bind(this);
+  this.onHashChange = this.onHashChange.bind(this);
+
+  window.addEventListener('hashchange', this.onHashChange);
 };
 
 utils.inherit(Gallery, BaseComponent);
 
 Gallery.prototype = {
+
+  onHashChange: function() {
+    if (location.hash.indexOf('photo') === -1) {
+      this.hide();
+    } else {
+      this.show(location.hash.match(/#photo\/(\S+)/)[1]);
+    }
+  },
   /**
    * Вывод на экран блока галереи, добавление обработчиков событий
    * и устанавка текущей выбранной картинки
@@ -46,11 +57,7 @@ Gallery.prototype = {
       this.activePicture = pictureNum;
     } else if (typeof pictureNum === 'string') {
       this.pictureSrc = '/' + pictureNum;
-      for (var i = 0; i < this.pictures.length; i++) {
-        if (this.pictures[i] === this.pictureSrc) {
-          this.activePicture = i + 1;
-        }
-      }
+      this.activePicture = Array.prototype.indexOf.call(this.pictures, this.pictureSrc) + 1;
     }
 
     this.element.classList.remove(CLASS_INVISIBLE);
