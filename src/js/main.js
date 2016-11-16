@@ -29,7 +29,7 @@ Array.prototype.forEach.call(pictures, function(picture, pictureNum) {
 });
 
 var onHashChange = function() {
-  return location.hash.indexOf('photo') === -1 ? gallery.hide() : gallery.show(location.hash.match(/#photo\/(\S+)/)[1]);
+  location.hash.indexOf('photo') === -1 ? gallery.hide() : gallery.show(location.hash.match(/#photo\/(\S+)/)[1]);
 };
 
 window.addEventListener('hashchange', onHashChange);
