@@ -30,6 +30,7 @@ var Gallery = function(container, picturesList) {
   this.hide = this.hide.bind(this);
   this.onLeftClick = this.onLeftClick.bind(this);
   this.onRightClick = this.onRightClick.bind(this);
+  this._reloadHash = this._reloadHash.bind(this);
 };
 
 utils.inherit(Gallery, BaseComponent);
@@ -44,8 +45,12 @@ Gallery.prototype = {
     if (typeof pictureNum === 'number') {
       this.activePicture = pictureNum;
     } else if (typeof pictureNum === 'string') {
-      this.activePicture = pictureNum.match(/(\d)/)[1];
-      this.pictureSrc = pictureNum;
+      this.pictureSrc = '/' + pictureNum;
+      for (var i = 0; i < this.pictures.length; i++) {
+        if (this.pictures[i] === this.pictureSrc) {
+          this.activePicture = i + 1;
+        }
+      }
     }
 
     this.element.classList.remove(CLASS_INVISIBLE);
@@ -86,9 +91,9 @@ Gallery.prototype = {
    * Обновление хэша и возврат из него адреса картинки
    */
   _reloadHash: function() {
-    location.hash = '#photo/img/screenshots/' + this.activePicture + '.png';
-    this.pictureSrc = location.hash.match(/#photo\/(\S+)/)[1];
-    window.addEventListener('hashchange', this.setActivePicture());
+    this.pictureSrc = this.pictures[this.activePicture - 1];
+    location.hash = '#photo' + this.pictureSrc;
+    this.setActivePicture();
   },
 
   /**
@@ -101,6 +106,7 @@ Gallery.prototype = {
     if (typeof this.pictureSrc === 'string') {
       image.src = this.pictureSrc;
       this.currentPicture.innerText = this.activePicture;
+
     } else if (typeof this.activePicture === 'number') {
       image.src = this.pictures[this.activePicture];
       this.currentPicture.innerText = this.activePicture + 1;
