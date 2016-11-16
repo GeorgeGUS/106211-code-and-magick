@@ -21,12 +21,10 @@ var gallery = new Gallery(galleryContainer, picturesList);
 
 Array.prototype.forEach.call(pictures, function(picture, pictureNum) {
   picture.onclick = function() {
-    location.hash = 'photo/img/screenshots/' + (pictureNum + 1) + '.png';
+    location.hash = '#photo/img/screenshots/' + (pictureNum + 1) + '.png';
     gallery.show(location.hash.match(/#photo\/(\S+)/)[1]);
   };
 });
-// window.addEventListener('hashchange');
-// window.onhashchange = gallery.show(location.hash.match(/#photo\/(\S+)/)[1]);
 
 window.onload = gallery.show(location.hash.match(/#photo\/(\S+)/)[1]);
 

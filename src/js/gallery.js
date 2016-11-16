@@ -30,8 +30,6 @@ var Gallery = function(container, picturesList) {
   this.hide = this.hide.bind(this);
   this.onLeftClick = this.onLeftClick.bind(this);
   this.onRightClick = this.onRightClick.bind(this);
-
-
 };
 
 utils.inherit(Gallery, BaseComponent);
@@ -56,10 +54,7 @@ Gallery.prototype = {
     this.controlLeft.addEventListener('click', this.onLeftClick);
     this.controlRight.addEventListener('click', this.onRightClick);
 
-    window.onhashchange = this._restoreFromHash();
-
-    this._restoreFromHash();
-    this.setActivePicture();
+    this._reloadHash();
   },
 
   /**
@@ -76,21 +71,24 @@ Gallery.prototype = {
   onLeftClick: function() {
     if (this.activePicture > 1) {
       this.activePicture--;
-      location.hash = 'photo/img/screenshots/' + this.activePicture + '.png';
-      location.reload();
+      this._reloadHash();
     }
   },
 
   onRightClick: function() {
     if (this.activePicture < this.pictures.length) {
       this.activePicture++;
-      location.hash = 'photo/img/screenshots/' + this.activePicture + '.png';
-      location.reload();
+      this._reloadHash();
     }
   },
 
-  _restoreFromHash: function() {
-    location.hash = location.hash.indexOf('photo') !== -1 ? '' : 'photo/img/screenshots/' + this.activePicture + '.png';
+  /**
+   * Обновление хэша и возврат из него адреса картинки
+   */
+  _reloadHash: function() {
+    location.hash = '#photo/img/screenshots/' + this.activePicture + '.png';
+    this.pictureSrc = location.hash.match(/#photo\/(\S+)/)[1];
+    window.addEventListener('hashchange', this.setActivePicture());
   },
 
   /**
@@ -100,7 +98,7 @@ Gallery.prototype = {
     var galleryPreview = document.querySelector('.overlay-gallery-preview');
 
     var image = new Image();
-    if (typeof this.activePicture === 'string') {
+    if (typeof this.pictureSrc === 'string') {
       image.src = this.pictureSrc;
       this.currentPicture.innerText = this.activePicture;
     } else if (typeof this.activePicture === 'number') {
@@ -113,8 +111,6 @@ Gallery.prototype = {
     } else {
       galleryPreview.appendChild(image);
     }
-
-
   }
 };
 
