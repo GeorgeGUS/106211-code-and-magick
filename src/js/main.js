@@ -11,19 +11,24 @@ game.setGameStatus(Game.Verdict.INTRO);
 
 var pictures = document.querySelectorAll('.photogallery-image');
 
-var picturesList = [];
-for (var i = 0; i < pictures.length; i++) {
-  picturesList[i] = pictures[i].childNodes[0].src;
-}
+var picturesList = Array.prototype.map.call(pictures, function(picUrl) {
+  var pictureUrl = document.createElement('a');
+  pictureUrl.href = picUrl.childNodes[0].src;
+  return pictureUrl.pathname;
+});
+
 
 var galleryContainer = document.querySelector('.overlay-gallery');
 var gallery = new Gallery(galleryContainer, picturesList);
 
 Array.prototype.forEach.call(pictures, function(picture, pictureNum) {
   picture.onclick = function() {
-    gallery.show(pictureNum);
+    location.hash = '#photo' + picturesList[pictureNum];
+    gallery.show(location.hash);
   };
 });
+
+window.onload = gallery.onHashChange;
 
 var formOpenButton = document.querySelector('.reviews-controls-new');
 
