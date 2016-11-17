@@ -24,14 +24,9 @@ var gallery = new Gallery(galleryContainer, picturesList);
 Array.prototype.forEach.call(pictures, function(picture, pictureNum) {
   picture.onclick = function() {
     location.hash = '#photo' + picturesList[pictureNum];
-    gallery.show(location.hash.match(/#photo\/(\S+)/)[1]);
-    console.log(location);
+    gallery.show(location.hash);
   };
 });
-
-
-
-// window.addEventListener('hashchange', gallery.onHashChange);
 
 window.onload = gallery.onHashChange;
 

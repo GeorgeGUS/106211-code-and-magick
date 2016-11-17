@@ -24,7 +24,7 @@ var Gallery = function(container, picturesList) {
   this.controlRight = document.querySelector('.overlay-gallery-control-right');
 
   this.pictures = picturesList;
-  this.activePicture = 0;
+  this.pictureIndex = 0;
   this.totalPuctures.innerText = this.pictures.length;
 
   this.hide = this.hide.bind(this);
@@ -39,12 +39,14 @@ var Gallery = function(container, picturesList) {
 utils.inherit(Gallery, BaseComponent);
 
 Gallery.prototype = {
-
+  /**
+   * Проверка изменения хэша адресной строки
+   */
   onHashChange: function() {
     if (location.hash.indexOf('photo') === -1) {
       this.hide();
     } else {
-      this.show(location.hash.match(/#photo\/(\S+)/)[1]);
+      this.show(location.hash);
     }
   },
   /**
@@ -54,10 +56,13 @@ Gallery.prototype = {
    */
   show: function(pictureNum) {
     if (typeof pictureNum === 'number') {
-      this.activePicture = pictureNum;
+      this.pictureIndex = pictureNum;
     } else if (typeof pictureNum === 'string') {
-      this.pictureSrc = '/' + pictureNum;
-      this.activePicture = Array.prototype.indexOf.call(this.pictures, this.pictureSrc) + 1;
+      if (pictureNum === '') {
+        return;
+      }
+      this.pictureSrc = pictureNum.match(/#photo(\S+)/)[1];
+      this.pictureIndex = this.pictures.indexOf(this.pictureSrc) + 1;
     }
 
     this.element.classList.remove(CLASS_INVISIBLE);
@@ -81,15 +86,15 @@ Gallery.prototype = {
   },
 
   onLeftClick: function() {
-    if (this.activePicture > 1) {
-      this.activePicture--;
+    if (this.pictureIndex > 1) {
+      this.pictureIndex--;
       this._reloadHash();
     }
   },
 
   onRightClick: function() {
-    if (this.activePicture < this.pictures.length) {
-      this.activePicture++;
+    if (this.pictureIndex < this.pictures.length) {
+      this.pictureIndex++;
       this._reloadHash();
     }
   },
@@ -98,25 +103,25 @@ Gallery.prototype = {
    * Обновление хэша и возврат из него адреса картинки
    */
   _reloadHash: function() {
-    this.pictureSrc = this.pictures[this.activePicture - 1];
+    this.pictureSrc = this.pictures[this.pictureIndex - 1];
     location.hash = '#photo' + this.pictureSrc;
-    this.setActivePicture();
+    this.setpictureIndex();
   },
 
   /**
    * Вывод текущей картинки и её номера на экран
    */
-  setActivePicture: function() {
+  setpictureIndex: function() {
     var galleryPreview = document.querySelector('.overlay-gallery-preview');
 
     var image = new Image();
     if (typeof this.pictureSrc === 'string') {
       image.src = this.pictureSrc;
-      this.currentPicture.innerText = this.activePicture;
+      this.currentPicture.innerText = this.pictureIndex;
 
-    } else if (typeof this.activePicture === 'number') {
-      image.src = this.pictures[this.activePicture];
-      this.currentPicture.innerText = this.activePicture + 1;
+    } else if (typeof this.pictureIndex === 'number') {
+      image.src = this.pictures[this.pictureIndex];
+      this.currentPicture.innerText = this.pictureIndex + 1;
     }
 
     if (galleryPreview.lastElementChild.nodeName === 'IMG') {
@@ -124,6 +129,11 @@ Gallery.prototype = {
     } else {
       galleryPreview.appendChild(image);
     }
+  },
+
+  remove: function() {
+    this.hide();
+    window.removeEventListener('hashchange', this.onHashChange);
   }
 };
 
